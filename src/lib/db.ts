@@ -17,17 +17,6 @@ export const connect = async () => {
                 ADD FUNCTIONS
 /////////////////////////////////////////////*/
 
-// Add FNFT ID to DB
-// export const addId = async (poolId: string, fnftId: number, quantity: number, face: number, usd: number, chainId: number) => {
-//     // check if id alr exists
-//     let res = await client.query(`SELECT * FROM FNFTS WHERE fnftId = ${fnftId} AND poolId = '${poolId}' AND chainId = ${chainId}`);
-//     if (res.rowCount == 0) {
-//         res = await client.query(`INSERT INTO FNFTS (chainid, poolId, fnftId, face, quantity, usd) VALUES (${chainId}, '${poolId}', ${fnftId}, ${face}, ${quantity}, ${usd})`)
-//         console.log(`[${chainId}] ID = ${fnftId} added`)
-//     } else {
-//         console.log(`[${chainId}] ID = ${fnftId} alr exists`)
-//     }
-// }
 
 // Add Pool to DB
 export const addPool = async (pool: Pool) => {
