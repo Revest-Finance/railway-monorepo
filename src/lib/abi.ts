@@ -1500,3 +1500,1365 @@ export const priceProviderConfig = {
     address: priceProviderAddress,
     abi: priceProviderABI,
 } as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// outputReceiver
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const outputReceiverABI = [
+    {
+        stateMutability: 'nonpayable',
+        type: 'constructor',
+        inputs: [
+            { name: '_addressRegistry', internalType: 'address', type: 'address' },
+        ],
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'mintTo',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'token',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'tokenId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+            {
+                name: 'amountTokens',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            {
+                name: 'extraData',
+                internalType: 'bytes',
+                type: 'bytes',
+                indexed: false,
+            },
+        ],
+        name: 'DepositERC1155OutputReceiver',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'mintTo',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'token',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'amountTokens',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            {
+                name: 'extraData',
+                internalType: 'bytes',
+                type: 'bytes',
+                indexed: false,
+            },
+        ],
+        name: 'DepositERC20OutputReceiver',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'mintTo',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'token',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'tokenIds',
+                internalType: 'uint256[]',
+                type: 'uint256[]',
+                indexed: false,
+            },
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            {
+                name: 'extraData',
+                internalType: 'bytes',
+                type: 'bytes',
+                indexed: false,
+            },
+        ],
+        name: 'DepositERC721OutputReceiver',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'previousOwner',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'newOwner',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+        ],
+        name: 'OwnershipTransferred',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'caller',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'token',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'tokenId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+            {
+                name: 'amountTokens',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            {
+                name: 'extraData',
+                internalType: 'bytes',
+                type: 'bytes',
+                indexed: false,
+            },
+        ],
+        name: 'WithdrawERC1155OutputReceiver',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'caller',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'token',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'amountTokens',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            {
+                name: 'extraData',
+                internalType: 'bytes',
+                type: 'bytes',
+                indexed: false,
+            },
+        ],
+        name: 'WithdrawERC20OutputReceiver',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'caller',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'token',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'tokenIds',
+                internalType: 'uint256[]',
+                type: 'uint256[]',
+                indexed: false,
+            },
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            {
+                name: 'extraData',
+                internalType: 'bytes',
+                type: 'bytes',
+                indexed: false,
+            },
+        ],
+        name: 'WithdrawERC721OutputReceiver',
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'ADDRESS_REGISTRY',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'REVEST',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'TOKEN_VAULT',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'getAddressRegistry',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getAsset',
+        outputs: [{ name: 'asset', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+        name: 'getCustomMetadata',
+        outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getOutputDisplayValues',
+        outputs: [{ name: 'output', internalType: 'bytes', type: 'bytes' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getValue',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'amountToDeposit', internalType: 'uint256', type: 'uint256' },
+            { name: 'quantity', internalType: 'uint256', type: 'uint256' },
+            { name: 'caller', internalType: 'address', type: 'address' },
+        ],
+        name: 'handleAdditionalDeposit',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'newFNFTIds', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'caller', internalType: 'address', type: 'address' },
+            { name: 'cleanup', internalType: 'bool', type: 'bool' },
+        ],
+        name: 'handleFNFTRemaps',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'proportions', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'quantity', internalType: 'uint256', type: 'uint256' },
+            { name: 'caller', internalType: 'address', type: 'address' },
+        ],
+        name: 'handleSplitOperation',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'expiration', internalType: 'uint256', type: 'uint256' },
+            { name: 'caller', internalType: 'address', type: 'address' },
+        ],
+        name: 'handleTimelockExtensions',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'metadataHandler',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'owner',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: '', internalType: 'address', type: 'address' },
+            { name: 'recipient', internalType: 'address payable', type: 'address' },
+            { name: 'quantity', internalType: 'uint256', type: 'uint256' },
+        ],
+        name: 'receiveRevestOutput',
+        outputs: [],
+    },
+    {
+        stateMutability: 'payable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'owner', internalType: 'address payable', type: 'address' },
+            { name: 'quantity', internalType: 'uint256', type: 'uint256' },
+            {
+                name: 'config',
+                internalType: 'struct IRevest.FNFTConfig',
+                type: 'tuple',
+                components: [
+                    { name: 'asset', internalType: 'address', type: 'address' },
+                    { name: 'pipeToContract', internalType: 'address', type: 'address' },
+                    { name: 'depositAmount', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositMul', internalType: 'uint256', type: 'uint256' },
+                    { name: 'split', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositStopTime', internalType: 'uint256', type: 'uint256' },
+                    { name: 'maturityExtension', internalType: 'bool', type: 'bool' },
+                    { name: 'isMulti', internalType: 'bool', type: 'bool' },
+                    { name: 'nontransferrable', internalType: 'bool', type: 'bool' },
+                ],
+            },
+            { name: 'args', internalType: 'bytes', type: 'bytes' },
+        ],
+        name: 'receiveSecondaryCallback',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [],
+        name: 'renounceOwnership',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'resonate',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: 'revest', internalType: 'address', type: 'address' }],
+        name: 'setAddressRegistry',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: '_metadata', internalType: 'address', type: 'address' }],
+        name: 'setMetadataHandler',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: '_resonate', internalType: 'address', type: 'address' }],
+        name: 'setResonate',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
+        name: 'supportsInterface',
+        outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+        name: 'transferOwnership',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: '', internalType: 'bytes', type: 'bytes' },
+        ],
+        name: 'triggerOutputReceiverUpdate',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [],
+        name: 'updateRevestVariables',
+        outputs: [],
+    },
+] as const
+
+export const outputReceiverAddress =
+    '0x8f74c989252B94Fd2d08a668884D303D57c91422' as const
+
+export const outputReceiverConfig = {
+    address: outputReceiverAddress,
+    abi: outputReceiverABI,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// tokenVault
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const tokenVaultABI = [
+    {
+        stateMutability: 'nonpayable',
+        type: 'constructor',
+        inputs: [
+            { name: 'provider', internalType: 'address', type: 'address' },
+            { name: 'oldOutputs', internalType: 'address[]', type: 'address[]' },
+            { name: 'newOutputs', internalType: 'address[]', type: 'address[]' },
+        ],
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            { name: 'from', internalType: 'address', type: 'address', indexed: true },
+        ],
+        name: 'CreateFNFT',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'token',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            { name: 'user', internalType: 'address', type: 'address', indexed: true },
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            {
+                name: 'tokenAmount',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+            {
+                name: 'smartWallet',
+                internalType: 'address',
+                type: 'address',
+                indexed: false,
+            },
+        ],
+        name: 'DepositERC20',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'previousOwner',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'newOwner',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+        ],
+        name: 'OwnershipTransferred',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            { name: 'from', internalType: 'address', type: 'address', indexed: true },
+        ],
+        name: 'RedeemFNFT',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'token',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            { name: 'user', internalType: 'address', type: 'address', indexed: true },
+            {
+                name: 'fnftId',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: true,
+            },
+            {
+                name: 'tokenAmount',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+            {
+                name: 'smartWallet',
+                internalType: 'address',
+                type: 'address',
+                indexed: false,
+            },
+        ],
+        name: 'WithdrawERC20',
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'FNFT_CUTOFF',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'OUTPUT_RECEIVER_INTERFACE_ID',
+        outputs: [{ name: '', internalType: 'bytes4', type: 'bytes4' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'TEMPLATE',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'pure',
+        type: 'function',
+        inputs: [
+            {
+                name: 'old',
+                internalType: 'struct IRevest.FNFTConfig',
+                type: 'tuple',
+                components: [
+                    { name: 'asset', internalType: 'address', type: 'address' },
+                    { name: 'pipeToContract', internalType: 'address', type: 'address' },
+                    { name: 'depositAmount', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositMul', internalType: 'uint256', type: 'uint256' },
+                    { name: 'split', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositStopTime', internalType: 'uint256', type: 'uint256' },
+                    { name: 'maturityExtension', internalType: 'bool', type: 'bool' },
+                    { name: 'isMulti', internalType: 'bool', type: 'bool' },
+                    { name: 'nontransferrable', internalType: 'bool', type: 'bool' },
+                ],
+            },
+        ],
+        name: 'cloneFNFTConfig',
+        outputs: [
+            {
+                name: '',
+                internalType: 'struct IRevest.FNFTConfig',
+                type: 'tuple',
+                components: [
+                    { name: 'asset', internalType: 'address', type: 'address' },
+                    { name: 'pipeToContract', internalType: 'address', type: 'address' },
+                    { name: 'depositAmount', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositMul', internalType: 'uint256', type: 'uint256' },
+                    { name: 'split', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositStopTime', internalType: 'uint256', type: 'uint256' },
+                    { name: 'maturityExtension', internalType: 'bool', type: 'bool' },
+                    { name: 'isMulti', internalType: 'bool', type: 'bool' },
+                    { name: 'nontransferrable', internalType: 'bool', type: 'bool' },
+                ],
+            },
+        ],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            {
+                name: 'fnftConfig',
+                internalType: 'struct IRevest.FNFTConfig',
+                type: 'tuple',
+                components: [
+                    { name: 'asset', internalType: 'address', type: 'address' },
+                    { name: 'pipeToContract', internalType: 'address', type: 'address' },
+                    { name: 'depositAmount', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositMul', internalType: 'uint256', type: 'uint256' },
+                    { name: 'split', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositStopTime', internalType: 'uint256', type: 'uint256' },
+                    { name: 'maturityExtension', internalType: 'bool', type: 'bool' },
+                    { name: 'isMulti', internalType: 'bool', type: 'bool' },
+                    { name: 'nontransferrable', internalType: 'bool', type: 'bool' },
+                ],
+            },
+            { name: 'quantity', internalType: 'uint256', type: 'uint256' },
+            { name: 'from', internalType: 'address', type: 'address' },
+        ],
+        name: 'createFNFT',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'transferAmount', internalType: 'uint256', type: 'uint256' },
+            { name: 'quantity', internalType: 'uint256', type: 'uint256' },
+        ],
+        name: 'depositToken',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getFNFT',
+        outputs: [
+            {
+                name: '',
+                internalType: 'struct IRevest.FNFTConfig',
+                type: 'tuple',
+                components: [
+                    { name: 'asset', internalType: 'address', type: 'address' },
+                    { name: 'pipeToContract', internalType: 'address', type: 'address' },
+                    { name: 'depositAmount', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositMul', internalType: 'uint256', type: 'uint256' },
+                    { name: 'split', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositStopTime', internalType: 'uint256', type: 'uint256' },
+                    { name: 'maturityExtension', internalType: 'bool', type: 'bool' },
+                    { name: 'isMulti', internalType: 'bool', type: 'bool' },
+                    { name: 'nontransferrable', internalType: 'bool', type: 'bool' },
+                ],
+            },
+        ],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getFNFTAddress',
+        outputs: [
+            { name: 'smartWallet', internalType: 'address', type: 'address' },
+        ],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getFNFTCurrentValue',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getNontransferable',
+        outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getSplitsRemaining',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: '', internalType: 'uint256', type: 'uint256' },
+            { name: '', internalType: 'uint256', type: 'uint256' },
+            { name: '', internalType: 'uint256', type: 'uint256' },
+        ],
+        name: 'handleMultipleDeposits',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            {
+                name: 'fnftConfig',
+                internalType: 'struct IRevest.FNFTConfig',
+                type: 'tuple',
+                components: [
+                    { name: 'asset', internalType: 'address', type: 'address' },
+                    { name: 'pipeToContract', internalType: 'address', type: 'address' },
+                    { name: 'depositAmount', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositMul', internalType: 'uint256', type: 'uint256' },
+                    { name: 'split', internalType: 'uint256', type: 'uint256' },
+                    { name: 'depositStopTime', internalType: 'uint256', type: 'uint256' },
+                    { name: 'maturityExtension', internalType: 'bool', type: 'bool' },
+                    { name: 'isMulti', internalType: 'bool', type: 'bool' },
+                    { name: 'nontransferrable', internalType: 'bool', type: 'bool' },
+                ],
+            },
+        ],
+        name: 'mapFNFTToToken',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: '', internalType: 'address', type: 'address' }],
+        name: 'migrations',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'owner',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'user', internalType: 'address', type: 'address' },
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'tokenAmount', internalType: 'uint256', type: 'uint256' },
+        ],
+        name: 'recordAdditionalDeposit',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [],
+        name: 'renounceOwnership',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: 'registry', internalType: 'address', type: 'address' }],
+        name: 'setAddressRegistry',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'newFNFTIds', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'proportions', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'quantity', internalType: 'uint256', type: 'uint256' },
+        ],
+        name: 'splitFNFT',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+        name: 'transferOwnership',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'fnftId', internalType: 'uint256', type: 'uint256' },
+            { name: 'quantity', internalType: 'uint256', type: 'uint256' },
+            { name: 'user', internalType: 'address', type: 'address' },
+        ],
+        name: 'withdrawToken',
+        outputs: [],
+    },
+] as const
+
+export const tokenVaultAddress =
+    '0xD672f1E3411c23Edbb49e8EB6C6b1564b2BF8E17' as const
+
+export const tokenVaultConfig = {
+    address: tokenVaultAddress,
+    abi: tokenVaultABI,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// fnftHandler
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const fnftHandlerABI = [
+    {
+        stateMutability: 'nonpayable',
+        type: 'constructor',
+        inputs: [{ name: 'provider', internalType: 'address', type: 'address' }],
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'account',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'operator',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            { name: 'approved', internalType: 'bool', type: 'bool', indexed: false },
+        ],
+        name: 'ApprovalForAll',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'previousOwner',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'newOwner',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+        ],
+        name: 'OwnershipTransferred',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+            {
+                name: 'previousAdminRole',
+                internalType: 'bytes32',
+                type: 'bytes32',
+                indexed: true,
+            },
+            {
+                name: 'newAdminRole',
+                internalType: 'bytes32',
+                type: 'bytes32',
+                indexed: true,
+            },
+        ],
+        name: 'RoleAdminChanged',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+            {
+                name: 'account',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'sender',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+        ],
+        name: 'RoleGranted',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            { name: 'role', internalType: 'bytes32', type: 'bytes32', indexed: true },
+            {
+                name: 'account',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            {
+                name: 'sender',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+        ],
+        name: 'RoleRevoked',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'operator',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            { name: 'from', internalType: 'address', type: 'address', indexed: true },
+            { name: 'to', internalType: 'address', type: 'address', indexed: true },
+            {
+                name: 'ids',
+                internalType: 'uint256[]',
+                type: 'uint256[]',
+                indexed: false,
+            },
+            {
+                name: 'values',
+                internalType: 'uint256[]',
+                type: 'uint256[]',
+                indexed: false,
+            },
+        ],
+        name: 'TransferBatch',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            {
+                name: 'operator',
+                internalType: 'address',
+                type: 'address',
+                indexed: true,
+            },
+            { name: 'from', internalType: 'address', type: 'address', indexed: true },
+            { name: 'to', internalType: 'address', type: 'address', indexed: true },
+            { name: 'id', internalType: 'uint256', type: 'uint256', indexed: false },
+            {
+                name: 'value',
+                internalType: 'uint256',
+                type: 'uint256',
+                indexed: false,
+            },
+        ],
+        name: 'TransferSingle',
+    },
+    {
+        type: 'event',
+        anonymous: false,
+        inputs: [
+            { name: 'value', internalType: 'string', type: 'string', indexed: false },
+            { name: 'id', internalType: 'uint256', type: 'uint256', indexed: true },
+        ],
+        name: 'URI',
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'DEFAULT_ADMIN_ROLE',
+        outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'OUTPUT_RECEIVER_INTERFACE_V4_ID',
+        outputs: [{ name: '', internalType: 'bytes4', type: 'bytes4' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'PAUSER_ROLE',
+        outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [
+            { name: 'account', internalType: 'address', type: 'address' },
+            { name: 'id', internalType: 'uint256', type: 'uint256' },
+        ],
+        name: 'balanceOf',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [
+            { name: 'accounts', internalType: 'address[]', type: 'address[]' },
+            { name: 'ids', internalType: 'uint256[]', type: 'uint256[]' },
+        ],
+        name: 'balanceOfBatch',
+        outputs: [{ name: '', internalType: 'uint256[]', type: 'uint256[]' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'account', internalType: 'address', type: 'address' },
+            { name: 'id', internalType: 'uint256', type: 'uint256' },
+            { name: 'amount', internalType: 'uint256', type: 'uint256' },
+        ],
+        name: 'burn',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'account', internalType: 'address', type: 'address' },
+            { name: 'ids', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
+        ],
+        name: 'burnBatch',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'fnftsCreated',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [
+            { name: 'account', internalType: 'address', type: 'address' },
+            { name: 'id', internalType: 'uint256', type: 'uint256' },
+        ],
+        name: 'getBalance',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'getNextId',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'role', internalType: 'bytes32', type: 'bytes32' }],
+        name: 'getRoleAdmin',
+        outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'getSupply',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+            { name: 'account', internalType: 'address', type: 'address' },
+        ],
+        name: 'grantRole',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [
+            { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+            { name: 'account', internalType: 'address', type: 'address' },
+        ],
+        name: 'hasRole',
+        outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [
+            { name: 'account', internalType: 'address', type: 'address' },
+            { name: 'operator', internalType: 'address', type: 'address' },
+        ],
+        name: 'isApprovedForAll',
+        outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'account', internalType: 'address', type: 'address' },
+            { name: 'id', internalType: 'uint256', type: 'uint256' },
+            { name: 'amount', internalType: 'uint256', type: 'uint256' },
+            { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+        name: 'mint',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'to', internalType: 'address', type: 'address' },
+            { name: 'ids', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+        name: 'mintBatch',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'recipients', internalType: 'address[]', type: 'address[]' },
+            { name: 'quantities', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'id', internalType: 'uint256', type: 'uint256' },
+            { name: 'newSupply', internalType: 'uint256', type: 'uint256' },
+            { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+        name: 'mintBatchRec',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [],
+        name: 'owner',
+        outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [
+            { name: 'tokenId', internalType: 'uint256', type: 'uint256' },
+            { name: 'owner', internalType: 'address', type: 'address' },
+        ],
+        name: 'renderTokenURI',
+        outputs: [
+            { name: 'baseRenderURI', internalType: 'string', type: 'string' },
+            { name: 'parameters', internalType: 'string[]', type: 'string[]' },
+        ],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [],
+        name: 'renounceOwnership',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+            { name: 'account', internalType: 'address', type: 'address' },
+        ],
+        name: 'renounceRole',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'role', internalType: 'bytes32', type: 'bytes32' },
+            { name: 'account', internalType: 'address', type: 'address' },
+        ],
+        name: 'revokeRole',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'from', internalType: 'address', type: 'address' },
+            { name: 'to', internalType: 'address', type: 'address' },
+            { name: 'ids', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'amounts', internalType: 'uint256[]', type: 'uint256[]' },
+            { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+        name: 'safeBatchTransferFrom',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'from', internalType: 'address', type: 'address' },
+            { name: 'to', internalType: 'address', type: 'address' },
+            { name: 'id', internalType: 'uint256', type: 'uint256' },
+            { name: 'amount', internalType: 'uint256', type: 'uint256' },
+            { name: 'data', internalType: 'bytes', type: 'bytes' },
+        ],
+        name: 'safeTransferFrom',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: 'registry', internalType: 'address', type: 'address' }],
+        name: 'setAddressRegistry',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [
+            { name: 'operator', internalType: 'address', type: 'address' },
+            { name: 'approved', internalType: 'bool', type: 'bool' },
+        ],
+        name: 'setApprovalForAll',
+        outputs: [],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: 'newuri', internalType: 'string', type: 'string' }],
+        name: 'setURI',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+        name: 'supply',
+        outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
+        name: 'supportsInterface',
+        outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    },
+    {
+        stateMutability: 'nonpayable',
+        type: 'function',
+        inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+        name: 'transferOwnership',
+        outputs: [],
+    },
+    {
+        stateMutability: 'view',
+        type: 'function',
+        inputs: [{ name: 'fnftId', internalType: 'uint256', type: 'uint256' }],
+        name: 'uri',
+        outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    },
+] as const
+
+export const fnftHandlerAddress =
+    '0xa07E6a51420EcfCB081917f40423D29529705e8a' as const
+
+export const fnftHandlerConfig = {
+    address: fnftHandlerAddress,
+    abi: fnftHandlerABI,
+} as const

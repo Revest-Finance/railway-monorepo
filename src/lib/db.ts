@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { Adapter, Pool, Oracle } from './interfaces';
+import { Adapter, Pool, Oracle, FNFT } from './interfaces';
 
 const client = new Client({
     host: process.env.MYSQLHOST,
@@ -89,6 +89,17 @@ export const addOracle = async (oracle: Oracle) => {
         }
     }
 }
+// add FNFT to DB
+export const addFNFT = async (poolId: string, fnftId: number, quantity: number, face: number, usd: number, chainId: number) => {
+    // check if id alr exists
+    let res = await client.query(`SELECT * FROM FNFTS WHERE fnftId = ${fnftId} AND poolId = '${poolId}' AND chainId = ${chainId}`);
+    if (res.rowCount == 0) {
+        res = await client.query(`INSERT INTO FNFTS (chainid, poolId, fnftId, face, quantity, usd) VALUES (${chainId}, '${poolId}', ${fnftId}, ${face}, ${quantity}, ${usd})`)
+        console.log(`[${chainId}] ID = ${fnftId} added`)
+    } else {
+        console.log(`[${chainId}] ID = ${fnftId} alr exists`)
+    }
+}
 
 /*/////////////////////////////////////////////
                 READ ALL FUNCTIONS
@@ -114,6 +125,13 @@ export const readOracles = async (chainId: number) => {
     const res = await client.query<{asset: string}>(`SELECT asset FROM oracles WHERE chainId = ${chainId}`);
     return res.rows.map(row => row.asset);
 }
+export const readAllFNFTS = async (chainId: number) : Promise<FNFT[]> => {
+    // check if id alr exists
+    const q = `SELECT * FROM FNFTS where chainid = ${chainId}`
+    const res = await client.query<FNFT>(q);
+    return res.rows;
+}
+
 
 
 /*/////////////////////////////////////////////
@@ -132,6 +150,29 @@ export const updatePoolVolume = async (pool: Pool, volume: string) => {
     }
 }
 
+export const updateFNFT = async (fnftid: number, poolid: string, chainid: number, face: number, usd: number) => {
+    const sql2 = `SELECT face, usd FROM FNFTS WHERE fnftid = ${fnftid} AND poolId = '${poolid}' AND chainid = ${chainid}`
+    // check if id alr exists
+    let res = await client.query<{face: number, usd: string}>(sql2);
+    if (res.rowCount > 0) {
+        const old = res.rows[0]
+        const old_usd = parseFloat(old.usd.slice(1).replace(",", "")) // 1.91
+        if (old.face != face || Math.abs(old_usd - usd) > 0.01) {
+            console.log(`[${chainid}] [id=${fnftid}] UPDATED\t`, face.toFixed(10), old.face.toFixed(10), usd.toFixed(2), old_usd.toFixed(2))
+            res = await client.query(`UPDATE FNFTS SET face = ${face}, usd = ${usd} WHERE poolid = '${poolid}' and fnftid = ${fnftid} and chainid = ${chainid}`)
+        } else {
+            // console.log(`[${chainid}] [id=${fnftid}] skipped\t`, face.toFixed(10), old.face.toFixed(10), usd.toFixed(2), old_usd.toFixed(2))
+        }
+    } else {
+        console.log(`[${chainid}] ID = ${fnftid} doesn't exist`)
+    }
+}
+
+/*/////////////////////////////////////////////
+                REMOVE FUNCTIONS
+/////////////////////////////////////////////*/
+
+
 
 // remove id
 export const removeId = async (poolId: string, fnftId: number, chainId: number) => {
@@ -145,43 +186,3 @@ export const removeId = async (poolId: string, fnftId: number, chainId: number) 
         console.log(`[${chainId}] ID = ${fnftId} doesn't exist`)
     }
 }
-
-
-/*/////////////////////////////////////////////
-                UPDATE FUNCTIONS
-/////////////////////////////////////////////*/
-
-
-
-// update id
-// add id
-// export const addVolume = async (poolid: string, numPackets: bigint, chainid: number) => {
-//     // check if id alr exists
-
-//     // read volume, packet_size, packet_size_decimals and rate from db
-//     const res = await client.query<{ packetvolume: string }>(`SELECT packetVolume FROM POOLS WHERE poolid = '${poolid}' AND chainId = ${chainid} LIMIT 1`);
-//     if (res.rowCount > 0) {
-//         // /**              tokens                tokens   rate
-//         //  *  numPackets * ------ + numPackets * ------ * ----
-//         //  *               packets               packets  1e18
-//         //  *  Counts both issuer and purchaser side of transaction.
-//         //  */ 
-
-//         // let new_volume = numPackets.mul(pool.packetSize).add(numPackets.mul(pool.packetSize).mul(pool.rate).div(ethers.BigNumber.from(10).pow(18)));
-//         const old_packets = ethers.getBigInt(res.rows[0].packetvolume)
-//         const sql = `UPDATE POOLS SET packetVolume = ${(old_packets + numPackets).toString()} where poolid = '${poolid}'`
-//         await client.query(sql)
-//         console.log(`[${chainid}] ${numPackets} of volume added to ${poolid}`)
-//     } else {
-//         console.log(`[${chainid}] PoolID = ${poolid} doesn't exist`)
-//     }
-//     // add to volume
-
-//     // update volume value
-
-// }
-// export const clearVolume = async () => {
-//     // check if id alr exists
-//     console.log(`Volume cleared`);
-//     await client.query(`UPDATE POOLS SET packetVolume = '0'`)
-// }

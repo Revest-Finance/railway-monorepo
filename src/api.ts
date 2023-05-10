@@ -1,9 +1,10 @@
 import "./lib/db";
-import express from "express";
 import { getAddress, isAddress, isHexString} from "ethers";
 import { all_tvl, chain_tvl, getAdapters, getDegenPool, getFeaturedPools, getOracles, getPool, getPoolByVault, getPools, getVaultInfo, getXrate, isBeefyVault } from "./lib/db.api";
 import { CHAIN_IDS } from "./lib/constants";
+import express from "express";
 import axios from "axios";
+
 const app = express();
 const port = process.env.PORT || 3333;
 

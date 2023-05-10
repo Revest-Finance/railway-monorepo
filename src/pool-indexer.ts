@@ -1,10 +1,10 @@
-import { isE6, PROVIDERS, resonate_contracts } from "./lib/contracts";
+import axios from "axios";
+import cron from "node-cron";
+import { isE6, resonate_contracts } from "./lib/contracts";
 import { ethers, Log } from "ethers";
 import { addPool, connect, readPoolIds } from "./lib/db";
-import axios from "axios";
 import { poolQuery, PoolQueryResponse } from "./lib/gql";
-import { SUBGRAPH_URLS } from "./lib/constants";
-import cron from "node-cron";
+import { PROVIDERS, SUBGRAPH_URLS } from "./lib/constants";
 
 async function reconcile(chainid: number) {
     console.log("Reconciling db with subgraph");
@@ -44,6 +44,7 @@ async function reconcile(chainid: number) {
                     poolname: pool.poolName,
                     creator: pool.creator,
                     packetvolume: "0",
+                    verifiedby: "",
                     ts: pool.blockTimestamp,
                     tx: pool.transactionHash,
                 });
@@ -100,6 +101,7 @@ async function main() {
             poolname: logDescription.args[9],
             creator: logDescription.args[10],
             packetvolume: "0",
+            verifiedby: "",
             ts: (await event.getBlock()).timestamp,
             tx: event.transactionHash
         })

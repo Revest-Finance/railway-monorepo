@@ -1,7 +1,7 @@
 import { addAdapter, connect, readAdapters } from "./lib/db";
-import axios from "axios";
 import { adapterQuery, AdapterQueryResponse } from "./lib/gql";
 import { CHAIN_IDS, SUBGRAPH_URLS } from "./lib/constants";
+import axios from "axios";
 import cron from "node-cron";
 
 async function reconcile(chainid: number) {

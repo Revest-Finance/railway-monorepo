@@ -1,8 +1,8 @@
-import { connect, readPools, updatePoolVolume } from "./lib/db";
+import cron from "node-cron";
 import axios from "axios";
+import { connect, readPools, updatePoolVolume } from "./lib/db";
 import { volumeQuery, volumeQueryResponse } from "./lib/gql";
 import { CHAIN_IDS, eth_price, SUBGRAPH_URLS } from "./lib/constants";
-import cron from "node-cron";
 import { Pool } from "./lib/interfaces";
 import { getBigInt, formatUnits } from "ethers";
 import { price_provider_contracts } from "./lib/contracts";

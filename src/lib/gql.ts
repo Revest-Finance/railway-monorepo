@@ -19,6 +19,39 @@ export const poolQuery = JSON.stringify({
     variables: {}
 });
 
+export const FnftCreationsQuery = () =>
+    JSON.stringify({
+        query: `query {
+        fnftcreations(
+            first: 1000
+        ){
+            id
+            poolId
+            fnftId
+            isPrincipal
+            quantityFNFTs
+            blockTimestamp
+            transactionHash
+        }
+    }`,
+        variables: {}
+    });
+export const FnftRedeemsQuery = () =>
+    JSON.stringify({
+        query: `query {
+        fnftredeemeds{
+            id
+            poolId
+            fnftId
+            isPrincipal
+            quantityFNFTs
+            blockTimestamp
+            transactionHash
+        }
+    }`,
+        variables: {}
+    });
+
 export interface PoolQueryResponse {
     data: {
         data: {

@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { Adapter, Oracle, Pool, VaultInfo, XRATE } from './constants';
+import { Adapter, Oracle, Pool, VaultInfo, XRATE } from './interfaces';
 
 
 const client = new Client({
