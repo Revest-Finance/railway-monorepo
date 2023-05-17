@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import axios from "axios";
-import { connect, readPools, updatePoolVolume } from "./lib/db";
+import { connect, readPools, updatePoolVolume } from "./lib/db.indexers";
 import { volumeQuery, volumeQueryResponse } from "./lib/gql";
 import { CHAIN_IDS, eth_price, SUBGRAPH_URLS } from "./lib/constants";
 import { Pool } from "./lib/interfaces";

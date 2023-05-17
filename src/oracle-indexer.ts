@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import axios from "axios";
-import { addOracle, connect, readOracles } from "./lib/db";
+import { addOracle, connect, readOracles } from "./lib/db.indexers";
 import { oracleQuery, OracleQueryResponse } from "./lib/gql";
 import { CHAIN_IDS, SUBGRAPH_URLS } from "./lib/constants";
 

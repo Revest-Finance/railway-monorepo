@@ -1,4 +1,4 @@
-import { addAdapter, connect, readAdapters } from "./lib/db";
+import { addAdapter, connect, readAdapters } from "./lib/db.indexers";
 import { adapterQuery, AdapterQueryResponse } from "./lib/gql";
 import { CHAIN_IDS, SUBGRAPH_URLS } from "./lib/constants";
 import axios from "axios";

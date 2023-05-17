@@ -2,7 +2,7 @@ import axios from "axios";
 import cron from "node-cron";
 import { isE6, resonate_contracts } from "./lib/contracts";
 import { ethers, Log } from "ethers";
-import { addPool, connect, readPoolIds } from "./lib/db";
+import { addPool, connect, readPoolIds } from "./lib/db.indexers";
 import { poolQuery, PoolQueryResponse } from "./lib/gql";
 import { PROVIDERS, SUBGRAPH_URLS } from "./lib/constants";
 

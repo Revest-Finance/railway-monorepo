@@ -1,9 +1,10 @@
-import "./lib/db";
+import "./lib/db.indexers";
 import { getAddress, isAddress, isHexString} from "ethers";
 import { all_tvl, chain_tvl, getAdapters, getDegenPool, getFeaturedPools, getOracles, getPool, getPoolByVault, getPools, getVaultInfo, getXrate, isBeefyVault } from "./lib/db.api";
 import { CHAIN_IDS } from "./lib/constants";
 import express from "express";
 import axios from "axios";
+import { getFnftsForOwner } from "./lib/fnfts";
 
 const app = express();
 const port = process.env.PORT || 3333;
@@ -183,6 +184,22 @@ app.get("/beefy/:vault", async (req, res) => {
     } else {
         return res.status(201).json({"ERR" : `${vault} is not a beefy vault, or not supported by Resonate`})
     }
+});
+
+app.get("/:chainid/fnfts/:address", async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // should be two params
+    if (Object.keys(req.params).length != 2) return res.status(400).json({"ERR" : "Invalid num of parameters"})
+    if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) return res.status(400).json({"ERR" : "Invalid chainid"})
+    if (!isAddress(req.params.address)) return res.status(400).json({"ERR" : "Invalid address"})
+    const chainid = parseInt(req.params.chainid)
+    const owner = getAddress(req.params.address)
+
+    const fnfts = await getFnftsForOwner(chainid, owner);
+    if (!fnfts) return res.status(400).json({"ERR" : `[${chainid}] Error occurred while fetching oracles`})
+    
+    return res.status(200).json( { endpoint: "GET :chainId/fnfts/:owner", timestamp: Date.now(), data: fnfts} );
 });
 
 app.listen(port, () => {

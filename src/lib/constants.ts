@@ -5,7 +5,7 @@ export const SUBGRAPH_URLS: { [chainid: number]: string } = {
     1: "https://api.thegraph.com/subgraphs/name/ryantinder/resonate-mainnet",
     10: "https://api.thegraph.com/subgraphs/name/ryantinder/resonate-optimism",
     137: "https://api.thegraph.com/subgraphs/name/ryantinder/resonate-polygon",
-    250: "https://api.thegraph.com/subgraphs/name/ryantinder/resonate-fantom",
+    250: "https://api.thegraph.com/subgraphs/name/revest-finance/resonate-subgraph-fantom",
     42161: "https://api.thegraph.com/subgraphs/name/ryantinder/resonate-arbitrum",
 }
 
@@ -41,7 +41,6 @@ export const price_provider_addresses: {[chainId: number] : string } = {
     250 : "0x0F89ba3F140Ea9370aB05d434B8e32fDf41a6093",
     42161 : "0x0F89ba3F140Ea9370aB05d434B8e32fDf41a6093"
 }
-
 export const token_vault_addresses: {[chainId: number] : string } = {
     1 : "0xD672f1E3411c23Edbb49e8EB6C6b1564b2BF8E17",
     10 : "0x490867a64746AC33f721A778dD8C30BBb0074055",

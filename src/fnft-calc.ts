@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { connect, updateFNFT, readAllFNFTS } from './lib/db';
+import { connect, updateFNFT, readAllFNFTS } from './lib/db.indexers';
 import { BigNumber, Contract, constants, providers, utils } from "ethers-v5"
 import { CHAIN_IDS, E6_addresses, PROVIDER_STRING, eth_price, fnft_handler_addresses, output_receiver_addresses, price_provider_addresses } from './lib/constants';
 import { fnftHandlerABI, outputReceiverABI, priceProviderABI } from './lib/abi';
