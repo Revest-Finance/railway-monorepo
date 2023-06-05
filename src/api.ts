@@ -1,6 +1,6 @@
 import "./lib/db.indexers";
 import { getAddress, isAddress, isHexString} from "ethers";
-import { all_tvl, chain_tvl, getAdapters, getDegenPool, getFeaturedPools, getOracles, getPool, getPoolByVault, getPools, getVaultInfo, getXrate, isBeefyVault } from "./lib/db.api";
+import { all_tvl, chain_tvl, getAdapters, getDegenPool, getFeaturedPools, getHeroPool, getOracles, getPool, getPoolByVault, getPools, getVaultInfo, getXrate, isBeefyVault } from "./lib/db.api";
 import { CHAIN_IDS } from "./lib/constants";
 import express from "express";
 import axios from "axios";
@@ -85,6 +85,19 @@ app.get("/:chainid/pools", async (req, res) => {
     
     const chainid = parseInt(req.params.chainid)
     const pools = await getPools(chainid);
+    if (!pools) return res.status(400).json({"ERR" : `[${chainid}] Error occurred while fetching pools`})
+
+    return res.status(200).json( pools );
+});
+app.get("/:chainid/pools/hero", async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // should only one param
+    if (Object.keys(req.params).length != 1) return res.status(400).json({"ERR" : "Invalid num of parameters"})
+    if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) return res.status(400).json({"ERR" : "Invalid chainid"})
+    
+    const chainid = parseInt(req.params.chainid)
+    const pools = await getHeroPool(chainid);
     if (!pools) return res.status(400).json({"ERR" : `[${chainid}] Error occurred while fetching pools`})
 
     return res.status(200).json( pools );
