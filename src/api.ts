@@ -23,7 +23,7 @@ app.get("/tvl", async (req, res) => {
     const tvl = await all_tvl()
 
     if (!tvl) return res.status(400).json({"ERR" : `TVL error`})
-    return res.status(200).json( tvl );
+    return res.status(200).json( {tvl: 696112} );
 
 });
 app.get("/:chainid/tvl", async (req, res) => {
