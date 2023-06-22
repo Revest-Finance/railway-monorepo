@@ -41,7 +41,7 @@
     "start:api": "npm run build && node -r dotenv/config ./dist/api.js",
     "start:fnft-indexer": "npm run build && node -r dotenv/config ./dist/fnft-indexer.js",
     "start:fnft-calc": "npm run build && node -r dotenv/config ./dist/fnft-calc.js",
-    "start:apy-tvl": "npm run build && node -r dotenv/config ./dist/apy-tvl.js",
+    "start:apy-tvl": "npm run build && node -r dotenv/config ./dist/apy-tvl.js", 
     "lint": "eslint --ext .ts --fix src/**/*.ts test/**/*.ts",
     "preversion": "npm run build && npm run cover:check",
     "postversion": "git push && git push --tags",
