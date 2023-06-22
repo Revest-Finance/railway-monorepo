@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { Adapter, Pool, Oracle, FNFT } from './interfaces';
+import { Adapter, Pool, Oracle, FNFT, VaultInfo } from './interfaces';
 
 const client = new Client({
     host: process.env.MYSQLHOST,
@@ -131,8 +131,13 @@ export const readAllFNFTS = async (chainId: number) : Promise<FNFT[]> => {
     const res = await client.query<FNFT>(q);
     return res.rows;
 }
+// add id
+export const readVaultsFromProvider = async (provider: string) : Promise<VaultInfo[] | undefined> => {
+    // check if id alr exists
 
-
+    const res = await client.query<VaultInfo>(`SELECT * FROM vaults where provider = '${provider}'`);
+    return res.rows
+}
 
 /*/////////////////////////////////////////////
                 UPDATE FUNCTIONS
@@ -167,7 +172,26 @@ export const updateFNFT = async (fnftid: number, poolid: string, chainid: number
         console.log(`[${chainid}] ID = ${fnftid} doesn't exist`)
     }
 }
-
+export const updateVault = async (vault: VaultInfo) => {
+    // update vault 
+    // check if vault alr exists
+    const sql1 = `SELECT * FROM vaults WHERE chainid = '${vault.chainid}' and address = '${vault.address}'`
+    console.log(sql1)
+    let res = await client.query<VaultInfo>(sql1);
+    if (res.rowCount > 0) {
+        const old_apy = res.rows[0].apy.toFixed(5)
+        const new_apy = vault.apy.toFixed(5)
+        const old_tvl = res.rows[0].tvl.slice(1).replace(/,/g, "")
+        const new_tvl = vault.tvl
+        if (old_apy == new_apy && old_tvl == new_tvl) {
+            console.log(`[${vault.chainid}] [${vault.symbol}] skip\t`, old_apy, new_apy, old_tvl, new_tvl);
+        } else {
+            console.log(`[${vault.chainid}] [${vault.symbol}] UPDATE\t`, old_apy, new_apy, old_tvl, new_tvl);
+            const sql2 = `UPDATE vaults SET apy = ${vault.apy}, tvl = ${vault.tvl} WHERE address = '${vault.address}'`
+            res = await client.query(sql2)
+        }
+    }
+}
 /*/////////////////////////////////////////////
                 REMOVE FUNCTIONS
 /////////////////////////////////////////////*/

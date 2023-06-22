@@ -54,6 +54,7 @@ export interface VaultInfo {
     status: number
 }
 
+
 export interface XRATE {
     id: number
     chainid: number
