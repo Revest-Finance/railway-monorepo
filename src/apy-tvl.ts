@@ -10,7 +10,7 @@ const main = async () => {
     await connect();
     cron.schedule(`*/5 * * * * *`, async () => {
         await Promise.all(
-            [beefy()]
+            [yearn(), beefy(), reaper(), rageTrade(), frax()]
         )
     })
 }

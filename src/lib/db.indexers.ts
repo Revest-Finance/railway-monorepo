@@ -176,7 +176,6 @@ export const updateVault = async (vault: VaultInfo) => {
     // update vault 
     // check if vault alr exists
     const sql1 = `SELECT * FROM vaults WHERE chainid = '${vault.chainid}' and address = '${vault.address}'`
-    console.log(sql1)
     let res = await client.query<VaultInfo>(sql1);
     if (res.rowCount > 0) {
         const old_apy = res.rows[0].apy.toFixed(5)
