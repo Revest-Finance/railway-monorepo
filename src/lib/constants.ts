@@ -1,5 +1,15 @@
 import axios from "axios"
-import { JsonRpcProvider } from "ethers"
+import { JsonRpcProvider, getAddress } from "ethers"
+import { Pool } from "./interfaces"
+import { BigNumber } from "ethers-v5";
+
+export const ZERO = BigNumber.from(0);
+export const ONE = BigNumber.from(1);
+export const E14 = BigNumber.from(10).pow(14)
+export const E15 = BigNumber.from(10).pow(15)
+export const E16 = BigNumber.from(10).pow(16)
+export const E17 = BigNumber.from(10).pow(17)
+export const E18 = BigNumber.from(10).pow(18)
 
 export const SUBGRAPH_URLS: { [chainid: number]: string } = {
     1: "https://api.thegraph.com/subgraphs/name/ryantinder/resonate-mainnet",
@@ -73,3 +83,10 @@ export const E6_addresses: {[chainId: number] : string[]} = {
     31337 : ["0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"],
 }
 
+export const getDecimals = (address: string, chainId: number) => {
+    return E6_addresses[chainId].includes(getAddress(address)) ? 6 : 18
+}
+
+export const isCrossAsset = (pool: Pool) => {
+    return getAddress(pool.payoutasset) != getAddress(pool.vaultasset)
+}

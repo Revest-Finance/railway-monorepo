@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers-v5"
+
 export interface Pool {
     chainid: number
     poolid: string 
@@ -90,4 +92,25 @@ export interface FNFTRedeemed {
     quantityFNFTs: number,
     blockTimestamp: number,
     transactionHash: string
+}
+
+export interface ClientEvent {
+    chainId: number,
+    tx: string,
+    enqueuing: boolean,
+    isProducer: boolean,
+    poolId: string,
+    address: string,
+    position: BigNumber,
+    packetsRemaining: BigNumber,
+    depositedShares: BigNumber,
+    shouldFarm: boolean | undefined,
+    owner: string,
+    ts: number
+  }
+
+export interface QueueState {
+    isProducer: boolean,
+    events: ClientEvent[],
+    total: BigNumber
 }

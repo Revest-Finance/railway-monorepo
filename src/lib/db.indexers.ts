@@ -148,29 +148,34 @@ export const updatePoolVolume = async (pool: Pool, volume: string) => {
     if (prev_volume_res.rowCount > 0) {
         const prev_volume = prev_volume_res.rows[0].usdvolume.slice(1).replace(/,/g, "")
         console.log(`[${pool.chainid}] pool = ${pool.poolid} prev_volume = ${prev_volume} volume = ${volume}`)
-        if (volume !== prev_volume && volume !== "0") {
+        if (volume != prev_volume && volume != "0") {
             await client.query(`UPDATE pools SET usdvolume = '${volume}' WHERE poolid = '${pool.poolid}' AND chainid = ${pool.chainid}`)
             console.log(`[${pool.chainid}] pool = ${pool.poolid} updated volumeUSD = ${volume}`)
         }
     }
 }
-
-export const updateFNFT = async (fnftid: number, poolid: string, chainid: number, face: number, usd: number) => {
-    const sql2 = `SELECT face, usd FROM FNFTS WHERE fnftid = ${fnftid} AND poolId = '${poolid}' AND chainid = ${chainid}`
-    // check if id alr exists
-    let res = await client.query<{face: number, usd: string}>(sql2);
-    if (res.rowCount > 0) {
-        const old = res.rows[0]
-        const old_usd = parseFloat(old.usd.slice(1).replace(",", "")) // 1.91
-        if (old.face != face || Math.abs(old_usd - usd) > 0.01) {
-            console.log(`[${chainid}] [id=${fnftid}] UPDATED\t`, face.toFixed(10), old.face.toFixed(10), usd.toFixed(2), old_usd.toFixed(2))
-            res = await client.query(`UPDATE FNFTS SET face = ${face}, usd = ${usd} WHERE poolid = '${poolid}' and fnftid = ${fnftid} and chainid = ${chainid}`)
-        } else {
-            // console.log(`[${chainid}] [id=${fnftid}] skipped\t`, face.toFixed(10), old.face.toFixed(10), usd.toFixed(2), old_usd.toFixed(2))
+export const updatePoolTVL = async (pool: Pool, tvl: number) => {
+    const prev_tvl_res = await client.query<{tvl: string}>(`SELECT tvl from pools WHERE poolid = '${pool.poolid}' AND chainid = ${pool.chainid}`)
+    if (prev_tvl_res.rowCount > 0) {
+        const prev_tvl = prev_tvl_res.rows[0].tvl.slice(1).replace(/,/g, "")
+        console.table(`[${pool.chainid}] pool = ${pool.poolid} prev_tvl = ${prev_tvl} tvl = ${tvl}`)
+        if (tvl != 0) {
+            await client.query(`UPDATE pools SET tvl = '${tvl}' WHERE poolid = '${pool.poolid}' AND chainid = ${pool.chainid}`)
+            console.log(`[${pool.chainid}] pool = ${pool.poolid} updated volumeUSD = ${tvl}`)
         }
-    } else {
-        console.log(`[${chainid}] ID = ${fnftid} doesn't exist`)
     }
+}
+
+export const batchUpdateFNFTs = async (fnfts: FNFT[]) => {
+    let sql = '';
+    for (const fnft of fnfts) {
+        if (fnft.usd == 0 || fnft.face == 0) {
+            console.log("skipping", fnft.fnftid, fnft.usd, fnft.face); 
+            continue;
+        }
+        sql += `UPDATE FNFTS SET USD = ${fnft.usd}, FACE = ${fnft.face} WHERE FNFTID = ${fnft.fnftid} AND CHAINID = ${fnft.chainid}; `
+    }
+    return await client.query(sql);
 }
 export const updateVault = async (vault: VaultInfo) => {
     // update vault 

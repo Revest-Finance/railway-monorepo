@@ -19,7 +19,22 @@ const graphFNFTCreationEvents = async (chainid: number) => {
     config.data = FnftRedeemsQuery()
     const redeems_res = await axios(config)
     const redeems = redeems_res["data"]["data"]["fnftredeemeds"] as FNFTRedeemed[]
-    const diff = creations.filter((creation) => !redeems.find((redeem) => redeem.fnftId === creation.fnftId))
+    const redeems_aggregate: {[id: number] : number} = {}
+    for (const redeemEvent of redeems) {
+        if (!redeems_aggregate[redeemEvent.fnftId]) {
+            redeems_aggregate[redeemEvent.fnftId] = redeemEvent.quantityFNFTs
+        } else {
+            redeems_aggregate[redeemEvent.fnftId] += redeemEvent.quantityFNFTs
+        }
+    }
+    Object.keys(redeems_aggregate).forEach((key) => {
+        const id = parseInt(key)
+        // creation has to exist for redeem to exist
+        creations.find((creation) => creation.fnftId == id)!.quantityFNFTs -= redeems_aggregate[id]
+    })
+
+    const diff = creations.filter(creation => creation.quantityFNFTs > 0)
+    // console.log(diff.map( d => d.fnftId).sort().join(","))
     return diff
 }
 
