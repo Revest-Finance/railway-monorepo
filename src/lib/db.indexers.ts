@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import { Adapter, Pool, Oracle, FNFT, VaultInfo } from './interfaces';
+import { Adapter, Pool, Oracle, FNFT, VaultInfo, PoolAndTvl } from './interfaces';
 
 const client = new Client({
     host: process.env.MYSQLHOST,
@@ -165,7 +165,17 @@ export const updatePoolTVL = async (pool: Pool, tvl: number) => {
         }
     }
 }
-
+export const batchUpdatePoolTVLs = async (pools: PoolAndTvl[]) => {
+    let sql = '';
+    for (const pool of pools) {
+        if (pool.tvl == 0) {
+            console.log("skipping", pool.poolid, pool.poolname); 
+            continue;
+        }
+        sql += `UPDATE POOLS SET TVL = ${pool.tvl} WHERE POOLID = '${pool.poolid}' AND CHAINID = ${pool.chainid}; `
+    }
+    return await client.query(sql);
+}
 export const batchUpdateFNFTs = async (fnfts: FNFT[]) => {
     let sql = '';
     for (const fnft of fnfts) {

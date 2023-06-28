@@ -20,6 +20,10 @@ export interface Pool {
     tx: string
 }
 
+export interface PoolAndTvl extends Pool {
+    tvl: number
+}
+
 export interface Adapter {
     chainid: number
     underlyingVault: string
@@ -107,10 +111,11 @@ export interface ClientEvent {
     shouldFarm: boolean | undefined,
     owner: string,
     ts: number
-  }
-
+}
 export interface QueueState {
     isProducer: boolean,
     events: ClientEvent[],
-    total: BigNumber
+    totalQueuedPackets: BigNumber,
+    adjustedQueuedTokens: BigNumber,
+    totalUsd: number
 }
