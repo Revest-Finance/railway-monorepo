@@ -79,7 +79,7 @@ const run = async (chainId: number) => {
 
 const main = async () => {
     await connect();
-    cron.schedule(`*/1 * * * *`, async () => {
+    cron.schedule(`*/60 * * * *`, async () => {
         eth = await eth_price()
         await Promise.all(CHAIN_IDS.map( id => {
             run(id)
