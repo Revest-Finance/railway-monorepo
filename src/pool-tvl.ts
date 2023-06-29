@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import { CHAIN_IDS, eth_price } from './lib/constants';
-import { batchUpdatePoolTVLs, connect, readPools, updatePoolTVL } from './lib/db.indexers';
+import { batchUpdatePoolTVLs, connect, readPools } from './lib/db.indexers';
 import axios from 'axios';
 import { PoolAndTvl, QueueState } from './lib/interfaces';
 let eth = 0;
@@ -40,17 +40,11 @@ const main = async () => {
     await connect();
     // This runs once an hour because it is very expensive
     for (const id of CHAIN_IDS) {
-        try {
-            cron.schedule(`*/1 * * *`, async () => {
-                eth = await eth_price();
-                run(id)
-            });
-            delay(10000)
-        } catch (e) {
-            console.error(`[${id}] ${e}`)
-        }
+        cron.schedule(`*/720 * * * *`, async () => {
+            eth = await eth_price();
+            run(id)
+        });
     }
-
 }
 
 main().then()

@@ -154,17 +154,6 @@ export const updatePoolVolume = async (pool: Pool, volume: string) => {
         }
     }
 }
-export const updatePoolTVL = async (pool: Pool, tvl: number) => {
-    const prev_tvl_res = await client.query<{tvl: string}>(`SELECT tvl from pools WHERE poolid = '${pool.poolid}' AND chainid = ${pool.chainid}`)
-    if (prev_tvl_res.rowCount > 0) {
-        const prev_tvl = prev_tvl_res.rows[0].tvl.slice(1).replace(/,/g, "")
-        console.table(`[${pool.chainid}] pool = ${pool.poolid} prev_tvl = ${prev_tvl} tvl = ${tvl}`)
-        if (tvl != 0) {
-            await client.query(`UPDATE pools SET tvl = '${tvl}' WHERE poolid = '${pool.poolid}' AND chainid = ${pool.chainid}`)
-            console.log(`[${pool.chainid}] pool = ${pool.poolid} updated volumeUSD = ${tvl}`)
-        }
-    }
-}
 export const batchUpdatePoolTVLs = async (pools: PoolAndTvl[]) => {
     let sql = '';
     for (const pool of pools) {
