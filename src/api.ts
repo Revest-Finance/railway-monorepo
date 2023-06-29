@@ -23,7 +23,7 @@ app.get("/tvl", async (req, res) => {
     const tvl = await all_tvl()
 
     if (!tvl) return res.status(400).json({"ERR" : `TVL error`})
-    return res.status(200).json(696112);
+    return res.status(200).json(tvl);
 
 });
 app.get("/:chainid/tvl", async (req, res) => {
@@ -34,20 +34,9 @@ app.get("/:chainid/tvl", async (req, res) => {
     if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) return res.status(400).json({"ERR" : "Invalid chainid"})
     
     const chainid = parseInt(req.params.chainid)
-    let tvl = await chain_tvl(chainid)
+    const tvl = await chain_tvl(chainid)
 
     if (!tvl) return res.status(400).json({"ERR" : `[${chainid}] TVL error`})
-    if (chainid == 1) {
-        tvl = 530240
-    } else if (chainid == 10) {
-        tvl = 26534
-    } else if (chainid == 137) {
-        tvl = 42392
-    } else if (chainid == 250) {
-        tvl = 53395
-    } else {
-        tvl = 32232
-    }
     return res.status(200).json( tvl );
 
 });
