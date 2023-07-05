@@ -21,7 +21,7 @@ const run = async (chainId: number) => {
     const tvls: {[poolid: string] : number} = {} 
     await Promise.all(pools.map(async (pool) => {
         try {
-            const res = await axios.get(`https://resonate-app-git-feature-pool-row-ui-update-revest.vercel.app/api/get-queue-state?chainId=${pool.chainid}&&poolId=${pool.poolid}`)
+            const res = await axios.get(`https://app.resonate.finance/api/get-queue-state?chainId=${pool.chainid}&&poolId=${pool.poolid}`)
             const queueState = res.data as QueueState
             tvls[pool.poolid] = queueState.totalUsd
         } catch (e) {
