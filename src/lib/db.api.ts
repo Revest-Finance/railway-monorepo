@@ -62,10 +62,10 @@ export const getFeaturedPools = async () : Promise<Pool[] | undefined> =>{
     return res.rowCount > 0 ? res.rows : undefined
     
 }
-export const getDegenPool = async () : Promise<Pool | undefined> =>{
-    const res = await client.query<Pool>(`SELECT * FROM pools WHERE status = 3 limit 1`)
+export const getDegenPools = async () : Promise<Pool[] | undefined> =>{
+    const res = await client.query<Pool>(`SELECT * FROM pools WHERE status = 3`)
 
-    return res.rowCount > 0 ? res.rows[0] : undefined
+    return res.rowCount > 0 ? res.rows : undefined
 }
 export const getHeroPool = async (chainid: number) : Promise<Pool | undefined> =>{
     const res = await client.query<Pool>(`SELECT * FROM pools WHERE status = 4 and chainid = ${chainid} limit 1`)

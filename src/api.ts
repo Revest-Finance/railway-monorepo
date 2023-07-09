@@ -1,6 +1,6 @@
 import "./lib/db.indexers";
 import { getAddress, isAddress, isHexString} from "ethers";
-import { all_tvl, chain_tvl, getAdapters, getDegenPool, getFeaturedPools, getHeroPool, getOracles, getPool, getPoolByVault, getPools, getVaultInfo, getXrate, isBeefyVault } from "./lib/db.api";
+import { all_tvl, chain_tvl, getAdapters, getDegenPools, getFeaturedPools, getHeroPool, getOracles, getPool, getPoolByVault, getPools, getVaultInfo, getXrate, isBeefyVault } from "./lib/db.api";
 import { CHAIN_IDS } from "./lib/constants";
 import express from "express";
 import axios from "axios";
@@ -111,7 +111,7 @@ app.get("/pools/featured", async (req, res) => {
 });
 app.get("/pools/degen", async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    const pools = await getDegenPool();
+    const pools = await getDegenPools();
     if (!pools) return res.status(201).json({"ERR" : `Error occurred while fetching featured pools`})
 
     return res.status(200).json( pools );
