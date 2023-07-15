@@ -14,6 +14,7 @@ const tickers: {[address: string] : {ticker: string, oracleId?: string}} = {
     "0xa8fd81A0ec43841b64cDAE13F1F6816108fD37FF" : {ticker: "velodrome-usdc-dola"},
     "0x81F2F132465Ffb4B3C5d11f3d94582cC5c281c04" : {ticker: "velodrome-velo-usdc"},
     "0x1b620BE62788e940b4c4ae6Df933c50981AcAB80" : {ticker: "velodrome-weth-frxeth"},
+    "0x06E0A84c71dBD037c618CCf90798474E0e6f9C91" : {ticker: "velodrome-v2-weth-frxeth"},
 
     // 137
     "0xebe0c8d842AA5A57D7BEf8e524dEabA676F91cD1" : {ticker: "mai-usdc-mimatic"},
