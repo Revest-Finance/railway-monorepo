@@ -186,7 +186,7 @@ app.get("/:chainid/:address/usd", async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) return res.status(400).json({"ERR" : "Invalid chainid"})
     if (!isAddress(req.params.address)) return res.status(400).json({"ERR" : "Invalid address"})
-    const address = getAddress(req.params.address)
+    const address = req.params.address.toLowerCase()
     const chainid = parseInt(req.params.chainid)
     // should only one params
     if (!price_cache[address]) price_cache[address] = { price: 0, timestamp: 0};
