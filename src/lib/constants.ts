@@ -38,6 +38,11 @@ export const PROVIDERS: {[chainId: number] : JsonRpcProvider} = {
 
 export const CHAIN_IDS = [1, 10, 137, 250, 42161]
 
+export const toCoingeckoPlatform: {[chainid: number] : string} = {
+    1: "ethereum",
+    42161: "arbitrum-one"
+}
+
 export const eth_price = async (): Promise<number> => {
     const eth_res = await axios.get("https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2&vs_currencies=usd")
     return eth_res.data["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"].usd

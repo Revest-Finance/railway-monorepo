@@ -1,7 +1,7 @@
 import "./lib/db.indexers";
 import { getAddress, isAddress, isHexString} from "ethers";
 import { all_tvl, chain_tvl, getAdapters, getDegenPools, getFeaturedPools, getHeroPool, getOracles, getPool, getPoolByVault, getPools, getVaultInfo, getXrate, isBeefyVault } from "./lib/db.api";
-import { CHAIN_IDS } from "./lib/constants";
+import { CHAIN_IDS, toCoingeckoPlatform } from "./lib/constants";
 import express from "express";
 import axios from "axios";
 import { getFnftsForOwner } from "./lib/fnfts";
@@ -160,7 +160,6 @@ app.get("/:chainid/oracles", async (req, res) => {
     return res.status(200).json( adapters );
 });
 
-
 let eth_price = 0;
 let eth_price_timestamp = 0;
 app.get("/eth", async (req, res) => {
@@ -180,6 +179,28 @@ app.get("/eth", async (req, res) => {
     }
 
     return res.status(200).json( { eth_usd: eth_price, ts: eth_price_timestamp} );
+});
+
+const price_cache: {[ address: string] : {price: number, timestamp: number }} = {}
+app.get("/:chainid/:address", async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) return res.status(400).json({"ERR" : "Invalid chainid"})
+    if (!isAddress(req.params.address)) return res.status(400).json({"ERR" : "Invalid address"})
+    const address = getAddress(req.params.address)
+    const chainid = parseInt(req.params.chainid)
+    // should only one params
+    if (Date.now() - price_cache[address].timestamp > 1000 * 60) {
+        try {
+            const price_res = await axios.get(`https://api.coingecko.com/api/v3/simple/token_price/${toCoingeckoPlatform[chainid]}?contract_addresses=${address}&vs_currencies=usd`)
+            const price = price_res.data[address].usd
+            price_cache[address].timestamp = Date.now()
+            price_cache[address].price = price
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    return res.status(200).json( { usd: price_cache[address].price, ts: price_cache[address].timestamp } );
 });
 
 app.get("/beefy/:vault", async (req, res) => {
