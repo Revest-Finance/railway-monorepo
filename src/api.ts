@@ -197,6 +197,8 @@ app.get("/:chainid/:address", async (req, res) => {
             price_cache[address].price = price
         } catch (e) {
             console.error(e)
+            price_cache[address].timestamp = 0
+            price_cache[address].price = 0
         }
     }
 
