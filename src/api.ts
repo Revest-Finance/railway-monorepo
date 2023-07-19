@@ -182,7 +182,7 @@ app.get("/eth", async (req, res) => {
 });
 
 const price_cache: {[ address: string] : {price: number, timestamp: number }} = {}
-app.get("/:chainid/:address", async (req, res) => {
+app.get("/:chainid/:address/usd", async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) return res.status(400).json({"ERR" : "Invalid chainid"})
     if (!isAddress(req.params.address)) return res.status(400).json({"ERR" : "Invalid address"})
