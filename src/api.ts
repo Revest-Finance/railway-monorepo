@@ -189,6 +189,7 @@ app.get("/:chainid/:address/usd", async (req, res) => {
     const address = getAddress(req.params.address)
     const chainid = parseInt(req.params.chainid)
     // should only one params
+    if (!price_cache[address]) price_cache[address] = { price: 0, timestamp: 0};
     if (Date.now() - price_cache[address].timestamp > 1000 * 60) {
         try {
             const price_res = await axios.get(`https://api.coingecko.com/api/v3/simple/token_price/${toCoingeckoPlatform[chainid]}?contract_addresses=${address}&vs_currencies=usd`)
