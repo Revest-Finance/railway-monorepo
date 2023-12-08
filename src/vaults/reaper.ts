@@ -64,7 +64,7 @@ export async function reaper() {
             const crypt_info = crypt_info_arr.find( crypt => crypt.cryptContent.vault.address.toLowerCase() == vault.address.toLowerCase() )
             if (!crypt_info) {
                 console.error(`[${chainid}] [${vault.symbol}] stats missing for ${vault.address}`)
-                return
+                return Promise.resolve()
             }
             return updateVault({
                 ...vault,
