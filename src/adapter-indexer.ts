@@ -8,18 +8,27 @@ async function reconcile(chainid: number) {
     console.log(`[${chainid}] Reconciling db with subgraph`);
 
     const config = {
-        method: 'post',
+        method: "post",
         url: SUBGRAPH_URLS[chainid],
         headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
         },
-        data: adapterQuery
+        data: adapterQuery,
     };
-    const res = await axios(config) as AdapterQueryResponse
+    const res = (await axios(config)) as AdapterQueryResponse;
     const graph_adapters = [...new Set(res.data.data.vaultAdapterRegistereds)];
     const db_adapters = await readAdapters(chainid);
-    const distinct_graph_adapters = [...new Set(graph_adapters.map( adapter => adapter.underlyingVault ))]
-    console.log(`[${chainid}]`, "Found", graph_adapters.length, "adapters in subgraph", distinct_graph_adapters.length, "distinct, Found", db_adapters.length, "adapters in db");
+    const distinct_graph_adapters = [...new Set(graph_adapters.map(adapter => adapter.underlyingVault))];
+    console.log(
+        `[${chainid}]`,
+        "Found",
+        graph_adapters.length,
+        "adapters in subgraph",
+        distinct_graph_adapters.length,
+        "distinct, Found",
+        db_adapters.length,
+        "adapters in db",
+    );
     for (const adapter of graph_adapters) {
         if (!db_adapters.includes(adapter.vaultAdapter)) {
             await addAdapter({
@@ -28,7 +37,7 @@ async function reconcile(chainid: number) {
                 vaultAdapter: adapter.vaultAdapter,
                 vaultAsset: adapter.vaultAsset,
                 ts: adapter.blockTimestamp,
-                status: 1
+                status: 1,
             });
         }
     }
@@ -37,12 +46,13 @@ async function main() {
     await connect();
     console.log("Connected to db");
 
-    cron.schedule("*/1 * * * *", async () => {
-        await Promise.all(CHAIN_IDS.map((chainid) => {
-            return reconcile(chainid);
-        }))
+    cron.schedule("*/60 * * * *", async () => {
+        await Promise.all(
+            CHAIN_IDS.map(chainid => {
+                return reconcile(chainid);
+            }),
+        );
     });
 }
 
-
-main().then()
+main().then();
