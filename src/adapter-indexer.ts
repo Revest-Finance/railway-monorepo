@@ -46,7 +46,7 @@ async function main() {
     await connect();
     console.log("Connected to db");
 
-    cron.schedule("*/60 * * * *", async () => {
+    cron.schedule("0 * * * *", async () => {
         await Promise.all(
             CHAIN_IDS.map(chainid => {
                 return reconcile(chainid);
