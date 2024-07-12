@@ -20,6 +20,7 @@ import express from "express";
 import axios from "axios";
 import { getFnftsForOwner } from "./lib/fnfts";
 import { getPoints } from "./points";
+import { handleGetReduxStatistics, handleUpdateReduxStatistics } from "./lib/redux";
 
 const app = express();
 const port = process.env.PORT || 3333;
@@ -267,6 +268,27 @@ app.get("/points", async (req, res) => {
         console.error(e);
         return res.status(500).json({ ERR: "Something went wrong" });
     }
+});
+
+function isAuthorized(request: any): boolean {
+    const auth = request.headers.authorization;
+
+    return !!auth && auth === process.env.AUTH_KEY;
+}
+
+app.post("/redux", async (req, res) => {
+    if (!isAuthorized(req)) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    await handleUpdateReduxStatistics(req.body);
+    return res.status(200).json({ message: "Success" });
+});
+
+app.get("/redux", async (req, res) => {
+    const data = await handleGetReduxStatistics();
+
+    return res.status(200).json(data);
 });
 
 app.listen(port, () => {
