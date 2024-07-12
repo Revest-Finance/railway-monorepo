@@ -114,8 +114,6 @@ export const getPoolByVault = async (vault: string): Promise<Pool | undefined> =
 };
 
 export const updateReduxStatistics = async (request: ReduxStatisticsRequest) => {
-    console.log("Updating redux statistics", request);
-
     await client.query(
         `INSERT INTO statistics_percentage (timestamp, net_profit, buy_and_hold_return, avg_winning_trade, avg_losing_trade, largest_winning_trade, largest_losing_trade) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
