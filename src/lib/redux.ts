@@ -1,4 +1,5 @@
 import { getReduxStatistics, updateReduxStatistics } from "./db.api";
+import { getReduxTotalDeposited } from "./eth.api";
 
 export interface ReduxPerformanceEntry {
     timestamp: string;
@@ -12,6 +13,7 @@ export interface ReduxPerformanceEntry {
 
 export interface ReduxStatisticsRequest {
     currentBalance: number;
+    totalDeposited: number;
     usd: ReduxPerformanceEntry;
     percentage: ReduxPerformanceEntry;
 }
@@ -49,7 +51,10 @@ export async function handleGetReduxStatistics(): Promise<ReduxStatisticsRequest
         return cache.value;
     }
 
-    cache.value = await getReduxStatistics();
+    const totalDeposited = await getReduxTotalDeposited();
+    const dbStats = await getReduxStatistics();
+
+    cache.value = { ...dbStats, totalDeposited };
 
     setTimeout(() => {
         cache.value = null;
