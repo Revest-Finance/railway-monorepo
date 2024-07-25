@@ -21,9 +21,9 @@ import axios from "axios";
 import { getFnftsForOwner } from "./lib/fnfts";
 import { getPoints } from "./points";
 import { handleGetReduxStatistics, handleUpdateReduxStatistics } from "./lib/redux";
+import { AUTH_KEY, PORT } from "./config";
 
 const app = express();
-const port = process.env.PORT || 3333;
 
 app.use(express.json());
 app.use(express.raw({ type: "application/vnd.custom-type" }));
@@ -273,7 +273,7 @@ app.get("/points", async (req, res) => {
 function isAuthorized(request: any): boolean {
     const auth = request.headers.authorization;
 
-    return !!auth && auth === process.env.AUTH_KEY;
+    return !!auth && auth === AUTH_KEY;
 }
 
 app.post("/redux", async (req, res) => {
@@ -291,6 +291,6 @@ app.get("/redux", async (req, res) => {
     return res.status(200).json(data);
 });
 
-app.listen(port, () => {
-    console.log(`Server is listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server is listening at http://localhost:${PORT}`);
 });
