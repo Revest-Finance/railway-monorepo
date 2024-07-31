@@ -1,4 +1,4 @@
-import "./lib/db.indexers";
+import "@resonate/lib/db.indexers";
 import express from "express";
 
 import {
