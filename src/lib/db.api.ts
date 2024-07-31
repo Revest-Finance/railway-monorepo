@@ -1,13 +1,14 @@
 import { Client } from "pg";
+import { MYSQLDATABASE, MYSQLHOST, MYSQLPASSWORD, MYSQLPORT, MYSQLUSER } from "../config";
 import { Adapter, Oracle, Pool, VaultInfo, XRATE } from "./interfaces";
 import { ReduxPerformanceEntry, ReduxStatisticsRequest } from "./redux";
 
 const client = new Client({
-    host: process.env.MYSQLHOST,
-    user: process.env.MYSQLUSER,
-    password: process.env.MYSQLPASSWORD,
-    database: process.env.MYSQLDATABASE,
-    port: parseInt(process.env.MYSQLPORT!),
+    host: MYSQLHOST,
+    user: MYSQLUSER,
+    password: MYSQLPASSWORD,
+    database: MYSQLDATABASE,
+    port: MYSQLPORT,
 });
 
 client.connect();
