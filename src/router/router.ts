@@ -1,6 +1,6 @@
 import "./lib/db.indexers";
 import express from "express";
-import { handleGetReduxStatistics, handleUpdateReduxStatistics } from "../lib/redux";
+
 import {
     handleChainTVL,
     handleGetAdapters,
@@ -12,8 +12,10 @@ import {
     handleGetPoints,
     handleGetPools,
     handleGetPoolsById,
+    handleGetReduxStatistics,
     handleGetXrate,
     handleTVL,
+    handleUpdateReduxStatistics,
 } from "./routes";
 import { handleGetBeefyVault, handleGetVault } from "./routes/vaults";
 import { handleGetEthPrice, handleGetUSDPrice } from "./routes/prices";

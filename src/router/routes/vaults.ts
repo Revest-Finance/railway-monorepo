@@ -39,6 +39,12 @@ export async function handleGetBeefyVault(req: Request, res: Response) {
 
     const vault = getAddress(req.params.vault);
 
+    const isBeefy = await isBeefyVault(vault);
+
+    if (!isBeefy) {
+        return res.status(400).json({ ERR: `${vault} is not a beefy vault` });
+    }
+
     if (await isBeefyVault(vault)) {
         const pool = await getPoolByVault(vault);
         if (!pool) return res.status(201).json({ ERR: `No Resonate pools associated with ${vault}` });
