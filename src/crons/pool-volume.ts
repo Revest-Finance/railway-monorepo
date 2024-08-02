@@ -1,11 +1,10 @@
-import cron from "node-cron";
 import axios from "axios";
-import { connect, readPools, updatePoolVolume } from "./lib/db.indexers";
-import { volumeQuery, volumeQueryResponse } from "./lib/gql";
-import { CHAIN_IDS, eth_price, SUBGRAPH_URLS } from "./lib/constants";
-import { Pool } from "./lib/interfaces";
 import { getBigInt, formatUnits } from "ethers";
-import { price_provider_contracts } from "./lib/contracts";
+import { readPools, updatePoolVolume } from "@resonate/lib/db.indexers";
+import { volumeQuery, volumeQueryResponse } from "@resonate/lib/gql";
+import { CHAIN_IDS, eth_price, SUBGRAPH_URLS } from "@resonate/lib/constants";
+import { Pool } from "@resonate/lib/interfaces";
+import { price_provider_contracts } from "@resonate/lib/contracts";
 
 let eth = getBigInt(0);
 async function volumeForPool(pool: Pool) {
@@ -52,18 +51,23 @@ async function reconcile(chainid: number) {
 
     await Promise.all(pools.map(pool => volumeForPool(pool)));
 }
-async function main() {
-    await connect();
-    console.log("Connected to db");
 
-    cron.schedule("*/30 * * * *", async () => {
-        eth = getBigInt(Math.round(await eth_price()));
-        await Promise.all(
-            CHAIN_IDS.map(chainid => {
-                return reconcile(chainid);
-            }),
-        );
-    });
+export async function grindPoolVolume() {
+    console.log("Grinding pool volume at", new Date().toISOString());
+
+    eth = getBigInt(Math.round(await eth_price()));
+
+    const results = await Promise.allSettled(
+        CHAIN_IDS.map(chainid => {
+            return reconcile(chainid);
+        }),
+    );
+
+    for (const result of results) {
+        if (result.status === "rejected") {
+            console.error(result.reason);
+        }
+    }
+
+    console.log("Finished grinding pool volume at", new Date().toISOString());
 }
-
-main().then();

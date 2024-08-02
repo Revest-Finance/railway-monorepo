@@ -1,5 +1,4 @@
-import cron from "node-cron";
-import { connect, readAllFNFTS, batchUpdateFNFTs } from "./lib/db.indexers";
+import { readAllFNFTS, batchUpdateFNFTs } from "@resonate/lib/db.indexers";
 import { Contract, formatUnits, JsonRpcProvider, ZeroAddress } from "ethers";
 import {
     CHAIN_IDS,
@@ -9,8 +8,8 @@ import {
     getDecimals,
     output_receiver_addresses,
     price_provider_addresses,
-} from "./lib/constants";
-import { fnftHandlerABI, outputReceiverABI, priceProviderABI } from "./lib/abi";
+} from "@resonate/lib/constants";
+import { fnftHandlerABI, outputReceiverABI, priceProviderABI } from "@resonate/lib/abi";
 import { MulticallWrapper } from "ethers-multicall-provider";
 
 /**
@@ -73,12 +72,12 @@ const run = async (chainId: number) => {
      * Multicall the xrate for each unique asset to save rpc load
      */
     const unique_assets = Array.from(new Set(assets));
-    const xrates: { [asset: string]: BigInt } = {};
+    const xrates: { [asset: string]: bigint } = {};
     await Promise.all([
         ...unique_assets.map(asset =>
             price_provider_multicall
                 .getSafePrice(asset)
-                .then((res: BigInt) => (xrates[asset] = res))
+                .then((res: bigint) => (xrates[asset] = res))
                 .catch(() => (xrates[asset] = 0n)),
         ),
     ]);
@@ -94,23 +93,27 @@ const run = async (chainId: number) => {
             const supplyOfFNFT = parseInt(supplies[i].toString());
             const totalAssetsInFNFT =
                 supplyOfFNFT * parseFloat(formatUnits(values[i] as bigint, getDecimals(assets[i], chainId)));
-            const totalUsd = eth * totalAssetsInFNFT * parseFloat(formatUnits(xrates[assets[i]] as bigint, 18));
+            const totalUsd = eth * totalAssetsInFNFT * parseFloat(formatUnits(xrates[assets[i]], 18));
             return { ...fnft, usd: totalUsd, face: supplyOfFNFT };
         });
     console.table(_fnfts);
     await batchUpdateFNFTs(_fnfts);
 };
 
-const main = async () => {
-    await connect();
-    cron.schedule(`0 * * * *`, async () => {
-        eth = await eth_price();
-        await Promise.all(
-            CHAIN_IDS.map(id => {
-                run(id);
-            }),
-        );
-    });
-};
+export const grindFNFTCalc = async () => {
+    console.log("Grinding FNFTs/Calc at", new Date().toISOString());
+    eth = await eth_price();
+    const result = await Promise.allSettled(
+        CHAIN_IDS.map(id => {
+            run(id);
+        }),
+    );
 
-main().then();
+    for (const res of result) {
+        if (res.status === "rejected") {
+            console.error(res.reason);
+        }
+    }
+
+    console.log("Finished grinding FNFTs/Calc at", new Date().toISOString());
+};

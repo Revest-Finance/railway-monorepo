@@ -51,6 +51,8 @@ export const eth_price = async (): Promise<number> => {
     return eth_res.data["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"].usd;
 };
 
+export const PRICE_PROVIDER_GENESIS = 15655652;
+
 export const price_provider_addresses: { [chainId: number]: string } = {
     1: "0x0F89ba3F140Ea9370aB05d434B8e32fDf41a6093",
     10: "0x0F89ba3F140Ea9370aB05d434B8e32fDf41a6093",

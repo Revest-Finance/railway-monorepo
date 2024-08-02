@@ -1,11 +1,10 @@
-import cron from "node-cron";
-import { CHAIN_IDS, eth_price } from "./lib/constants";
-import { batchUpdatePoolTVLs, connect, readPools } from "./lib/db.indexers";
 import axios from "axios";
-import { PoolAndTvl, QueueState } from "./lib/interfaces";
-let eth = 0;
+import { CHAIN_IDS, eth_price } from "@resonate/lib/constants";
+import { batchUpdatePoolTVLs, readPools } from "@resonate/lib/db.indexers";
+import { PoolAndTvl, QueueState } from "@resonate/lib/interfaces";
 
-const run = async (chainId: number) => {
+let eth = 0;
+const reconcile = async (chainId: number) => {
     console.log("Running pool tvl indexer for chainId", chainId);
     /**
      * Need all pools and the exchange rate for each asset
@@ -39,15 +38,18 @@ const run = async (chainId: number) => {
     await batchUpdatePoolTVLs(updatablePools);
 };
 
-const main = async () => {
-    await connect();
+export const grindPoolTVL = async () => {
+    console.log("Grinding pool tvls at", new Date().toISOString());
     // This runs once an hour because it is very expensive
-    for (const id of CHAIN_IDS) {
-        cron.schedule(`*/720 * * * *`, async () => {
-            eth = await eth_price();
-            run(id);
-        });
-    }
-};
 
-main().then();
+    eth = await eth_price();
+    const results = await Promise.allSettled(CHAIN_IDS.map(id => reconcile(id)));
+
+    for (const result of results) {
+        if (result.status === "rejected") {
+            console.error(result.reason);
+        }
+    }
+
+    console.log("Finished grinding pool tvls at", new Date().toISOString());
+};

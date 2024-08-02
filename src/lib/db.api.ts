@@ -1,15 +1,8 @@
 import { Client } from "pg";
-import { MYSQLDATABASE, MYSQLHOST, MYSQLPASSWORD, MYSQLPORT, MYSQLUSER } from "../config";
 import { Adapter, Oracle, Pool, VaultInfo, XRATE } from "./interfaces";
 import { ReduxPerformanceEntry, ReduxStatisticsRequest } from "./redux";
 
-const client = new Client({
-    host: MYSQLHOST,
-    user: MYSQLUSER,
-    password: MYSQLPASSWORD,
-    database: MYSQLDATABASE,
-    port: MYSQLPORT,
-});
+const client = new Client("postgres://user:very_good_password@localhost:5432/resonate");
 
 client.connect();
 

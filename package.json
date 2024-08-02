@@ -1,19 +1,22 @@
 {
     "name": "typescript-template",
     "version": "1.0.4",
-    "description": "A complete Node.js project template using TypeScript and following general best practices.",
+    "description": "Resonate API and CRON jobs",
     "keywords": [
         "typescript",
-        "template"
+        "resonate",
+        "backend",
+        "api",
+        "railway"
     ],
     "author": {
-        "name": "Chris Wells",
-        "url": "https://chriswells.io"
+        "name": "Revest Finance",
+        "url": "https://revest.finance"
     },
     "license": "BSD-3-Clause",
     "repository": {
         "type": "git",
-        "url": "https://github.com/chriswells0/node-typescript-template.git"
+        "url": "https://github.com/Revest-Finance/railway-monorepo"
     },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -22,36 +25,10 @@
     ],
     "scripts": {
         "build": "tsc",
-        "changelog": "conventional-changelog -p angular -u",
-        "changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
         "clean": "if exist /dist rmdir /s /dist",
         "clean:all": "npm run clean && (rm -r ./node_modules || true)",
-        "cover": "nyc npm run test",
-        "cover:check": "nyc --check-coverage npm run test",
-        "coveralls": "nyc report --reporter=text-lcov | coveralls",
-        "dev": "npm run build && node ./dist/indexer.js",
-        "go": "ts-node-dev -r tsconfig-paths/register --poll src/api.ts",
-        "start:volume": "npm run build && node -r dotenv/config ./dist/pool-volume.js",
-        "start:oracle": "npm run build && node -r dotenv/config ./dist/oracle-indexer.js",
-        "start:adapter": "npm run build && node -r dotenv/config ./dist/adapter-indexer.js",
-        "start:mainnet": "npm run build && node -r dotenv/config ./dist/pool-indexer.js 1",
-        "start:optimism": "npm run build && node -r dotenv/config ./dist/pool-indexer.js 10",
-        "start:fantom": "npm run build && node -r dotenv/config ./dist/pool-indexer.js 250",
-        "start:arbitrum": "npm run build && node -r dotenv/config ./dist/pool-indexer.js 42161",
-        "start:polygon": "npm run build && node -r dotenv/config ./dist/pool-indexer.js 137",
-        "start:api": "npm run build && node -r dotenv/config ./dist/api.js",
-        "start:fnft-indexer": "npm run build && node -r dotenv/config ./dist/fnft-indexer.js",
-        "start:fnft-calc": "npm run build && node -r dotenv/config ./dist/fnft-calc.js",
-        "start:apy-tvl": "npm run build && node -r dotenv/config ./dist/apy-tvl.js",
-        "start:pool-volume": "npm run build && node -r dotenv/config ./dist/pool-volume.js",
-        "start:pool-tvl": "npm run build && node -r dotenv/config ./dist/pool-tvl.js",
-        "lint": "eslint --ext .ts --fix src/**/*.ts test/**/*.ts",
-        "preversion": "npm run build && npm run cover:check",
-        "postversion": "git push && git push --tags",
-        "prepare": "npm run build",
-        "test": "mocha",
-        "upgrade": "npx npm-check -u",
-        "version": "npm run build && npm run changelog:update"
+        "dev": "ts-node-dev -r tsconfig-paths/register --poll src/api.ts",
+        "start:api": "npm run build && node -r dotenv/config ./dist/api.js"
     },
     "devDependencies": {
         "@types/chai": "^4.1.6",
