@@ -85,7 +85,7 @@
     "dotenv": "^16.0.3",
     "ethers": "^6.0.2",
     "ethers-multicall": "^0.2.3",
-    "ethers-multicall-provider": "^3.0.2",
+    "ethers-multicall-provider": "^4.1.0",
     "ethers-v5": "npm:ethers@^5.7.2",
     "express": "^4.18.2",
     "node-cron": "^3.0.2",
