@@ -20,7 +20,7 @@ import express from "express";
 import axios from "axios";
 import { getFnftsForOwner } from "./lib/fnfts";
 import { getPoints } from "./points";
-import { handleGetReduxStatistics, handleUpdateReduxStatistics } from "./lib/redux";
+import { handleGetIndividualStatistics, handleGetReduxStatistics, handleUpdateReduxStatistics } from "./lib/redux";
 import { AUTH_KEY, PORT } from "./config";
 
 const app = express();
@@ -285,8 +285,20 @@ app.post("/redux", async (req, res) => {
     return res.status(200).json({ message: "Success" });
 });
 
-app.get("/redux", async (req, res) => {
+app.get("/redux", async (_, res) => {
     const data = await handleGetReduxStatistics();
+
+    return res.status(200).json(data);
+});
+
+app.get("/redux/:address", async (req, res) => {
+    const address = req.params.address;
+
+    if (!address) {
+        return res.status(400).json({ message: "Invalid address" });
+    }
+
+    const data = await handleGetIndividualStatistics(address);
 
     return res.status(200).json(data);
 });
