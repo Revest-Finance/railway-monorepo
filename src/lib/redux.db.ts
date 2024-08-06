@@ -128,8 +128,12 @@ const insertRequestsWithShares = async (requests: ReduxRequestWithShares[]) => {
             const id = randomUUID();
 
             // Fetch the processing event to get the ratio
-            const res = await client.query("SELECT ratio FROM redux_processing_events WHERE tx_hash = $1", [txHash]);
+            const res = await client.query("SELECT id, ratio FROM redux_processing_events WHERE tx_hash = $1", [
+                txHash,
+            ]);
             const { ratio, id: processingEventId } = res.rows[0];
+
+            console.log(`Processing event ID: ${processingEventId}, Ratio: ${ratio}`, txHash);
 
             // Calculate shares
             const shares = assets / ratio;
@@ -203,10 +207,16 @@ const getUserProfit = async (userAddress: string): Promise<UserProfit> => {
         const res = await client.query(query, [userAddress]);
         const { totalAssetProfit, totalShares, assetValue } = res.rows[0];
 
-        return {
+        const result = {
             totalAssetProfit: Number(totalAssetProfit) + Number(assetValue),
             totalShares: Number(totalShares),
             assetValue: Number(assetValue),
+        };
+
+        return {
+            totalAssetProfit: Number(result.totalAssetProfit.toFixed(5)),
+            totalShares: Number(result.totalShares.toFixed(5)),
+            assetValue: Number(result.assetValue.toFixed(5)),
         };
     } catch (err) {
         console.error("Error executing query", err);

@@ -90,7 +90,7 @@ export async function handleGetIndividualStatistics(userAddress: string): Promis
 
     console.log(`Ratio is outdated. Updating ratio to ${onchainRatio}.`);
 
-    const lastKnownBlock = await getLatestBlockNumber();
+    const lastKnownBlock = (await getLatestBlockNumber()) + 1;
 
     const [ratioUpdates, deposits, redeems, transfers] = await Promise.all([
         getRatioUpdates(lastKnownBlock),
