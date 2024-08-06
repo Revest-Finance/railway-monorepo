@@ -18,9 +18,9 @@ export async function getRedeems(blockNumber = 0): Promise<Redeems[]> {
 
     const requests = depositRequests.map(async (depositRequest: EventLog) => {
         const output: Redeems = {
-            userAddress: depositRequest.args.owner,
-            assets: Number(formatUnits(depositRequest.args.assets, 6)),
-            shares: Number(formatUnits(depositRequest.args.shares, 18)),
+            userAddress: depositRequest.args.receiver,
+            assets: Number(formatUnits(depositRequest.args.assets, 18)),
+            shares: Number(formatUnits(depositRequest.args.shares, 6)),
             txHash: depositRequest.transactionHash,
             type: "RedeemRequestProcessed",
         };
@@ -133,7 +133,7 @@ export async function handleRedeemRequests(): Promise<number> {
     const result = redeemRequests.map((redeemRequest: EventLog) => redeemRequest.args.assets);
     const totalRedeemed = result.reduce((acc, curr) => acc + curr, 0n);
 
-    return Number(formatUnits(totalRedeemed, 6));
+    return Number(formatUnits(totalRedeemed, 18));
 }
 
 export async function getReduxTotalDeposited(): Promise<number> {
