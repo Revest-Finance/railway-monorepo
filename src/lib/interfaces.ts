@@ -116,3 +116,45 @@ export interface QueueState {
     adjustedQueuedTokens: BigInt;
     totalUsd: number;
 }
+
+export interface Transfer {
+    id: string;
+    fromAddress: string;
+    toAddress: string;
+    amount: number;
+    blockTimestamp: string;
+    blockNumber: number;
+    txHash: string;
+}
+
+export interface ProcessingEvent {
+    id: string;
+    totalAssets: number;
+    ratio: number;
+    blockNumber: number;
+    blockTimestamp: string;
+    txHash: string;
+}
+
+export interface ReduxRequest {
+    id: string;
+    processingEventId: string;
+    type: "DepositRequestProcessed" | "RedeemRequestProcessed";
+    userAddress: string;
+    shares: number;
+    assets: number;
+}
+
+export interface UserShare {
+    userAddress: string;
+    blockTimestamp: string;
+    ratio: number;
+    assetsTotal: number;
+    sharesTotal: number;
+}
+
+export interface UserProfit {
+    totalAssetProfit: number;
+    totalShares: number;
+    assetValue: number;
+}

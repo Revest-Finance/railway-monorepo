@@ -1,5 +1,21 @@
 import { getReduxStatistics, updateReduxStatistics } from "./db.api";
-import { getReduxTotalDeposited } from "./eth.api";
+import {
+    getTransfers,
+    getDeposits,
+    getLatestRatio,
+    getRatioUpdates,
+    getRedeems,
+    getReduxTotalDeposited,
+} from "./eth.api";
+import { UserProfit } from "./interfaces";
+import {
+    getUserProfit,
+    getLatestRatio as getCachedRatio,
+    getLatestBlockNumber,
+    insertProcessingEvents,
+    insertRequestsWithShares,
+    insertTransfers,
+} from "./redux.db";
 
 export interface ReduxPerformanceEntry {
     timestamp: string;
@@ -61,4 +77,32 @@ export async function handleGetReduxStatistics(): Promise<ReduxStatisticsRequest
     }, 5000 * 60);
 
     return cache.value;
+}
+
+export async function handleGetIndividualStatistics(userAddress: string): Promise<UserProfit> {
+    const onchainRatio = await getLatestRatio();
+    const cachedRatio = await getCachedRatio();
+
+    if (onchainRatio === cachedRatio) {
+        console.log(`Ratio is up to date. Ratio: ${onchainRatio}.`);
+        return await getUserProfit(userAddress);
+    }
+
+    console.log(`Ratio is outdated. Updating ratio to ${onchainRatio}.`);
+
+    const lastKnownBlock = (await getLatestBlockNumber()) + 1;
+
+    const [ratioUpdates, deposits, redeems, transfers] = await Promise.all([
+        getRatioUpdates(lastKnownBlock),
+        getDeposits(lastKnownBlock),
+        getRedeems(lastKnownBlock),
+        getTransfers(lastKnownBlock),
+    ]);
+
+    await insertProcessingEvents(ratioUpdates);
+    await insertRequestsWithShares(deposits);
+    await insertRequestsWithShares(redeems);
+    await insertTransfers(transfers);
+
+    return await getUserProfit(userAddress);
 }
