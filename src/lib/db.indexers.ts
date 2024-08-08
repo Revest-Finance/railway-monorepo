@@ -2,17 +2,9 @@ import { Client } from "pg";
 import { MYSQLDATABASE, MYSQLHOST, MYSQLPASSWORD, MYSQLPORT, MYSQLUSER } from "../config";
 import { Adapter, Pool, Oracle, FNFT, VaultInfo, PoolAndTvl } from "./interfaces";
 
-const client = new Client({
-    host: MYSQLHOST,
-    user: MYSQLUSER,
-    password: MYSQLPASSWORD,
-    database: MYSQLDATABASE,
-    port: MYSQLPORT,
-});
+const client = new Client("postgres://user:very_good_password@localhost:5432/resonate");
 
-export const connect = async () => {
-    await client.connect();
-};
+client.connect();
 
 /*/////////////////////////////////////////////
                 ADD FUNCTIONS

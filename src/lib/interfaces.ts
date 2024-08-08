@@ -1,5 +1,3 @@
-import { BigNumber } from "ethers-v5";
-
 export interface Pool {
     chainid: number;
     poolid: string;
@@ -104,9 +102,9 @@ export interface ClientEvent {
     isProducer: boolean;
     poolId: string;
     address: string;
-    position: BigNumber;
-    packetsRemaining: BigNumber;
-    depositedShares: BigNumber;
+    position: BigInt;
+    packetsRemaining: BigInt;
+    depositedShares: BigInt;
     shouldFarm: boolean | undefined;
     owner: string;
     ts: number;
@@ -114,8 +112,8 @@ export interface ClientEvent {
 export interface QueueState {
     isProducer: boolean;
     events: ClientEvent[];
-    totalQueuedPackets: BigNumber;
-    adjustedQueuedTokens: BigNumber;
+    totalQueuedPackets: BigInt;
+    adjustedQueuedTokens: BigInt;
     totalUsd: number;
 }
 

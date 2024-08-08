@@ -1,9 +1,8 @@
-import cron from "node-cron";
-import { addFNFT, connect, readAllFNFTS } from "./lib/db.indexers";
-import { CHAIN_IDS, SUBGRAPH_URLS } from "./lib/constants";
 import axios, { AxiosRequestConfig } from "axios";
-import { FnftCreationsQuery, FnftRedeemsQuery } from "./lib/gql";
-import { FNFTCreation, FNFTRedeemed } from "./lib/interfaces";
+import { addFNFT, readAllFNFTS } from "@resonate/lib/db.indexers";
+import { CHAIN_IDS, SUBGRAPH_URLS } from "@resonate/lib/constants";
+import { FnftCreationsQuery, FnftRedeemsQuery } from "@resonate/lib/gql";
+import { FNFTCreation, FNFTRedeemed } from "@resonate/lib/interfaces";
 
 const graphFNFTCreationEvents = async (chainid: number) => {
     const config: AxiosRequestConfig = {
@@ -48,16 +47,21 @@ async function reconcile(chainid: number) {
         }
     }
 }
-async function main() {
-    await connect();
-    console.log("Connected to db");
-    cron.schedule("*/10 * * * *", async () => {
-        await Promise.all(
-            CHAIN_IDS.map(chainid => {
-                return reconcile(chainid);
-            }),
-        );
-    });
-}
 
-main().then();
+export async function grindFNFTs() {
+    console.log("Grinding FNFTs at", new Date().toISOString());
+
+    const result = await Promise.allSettled(
+        CHAIN_IDS.map(chainid => {
+            return reconcile(chainid);
+        }),
+    );
+
+    for (const res of result) {
+        if (res.status === "rejected") {
+            console.error(res.reason);
+        }
+    }
+
+    console.log("Finished grinding FNFTs at", new Date().toISOString());
+}

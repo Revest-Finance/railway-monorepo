@@ -1,24 +1,31 @@
-type CachedElement<T> = {
-    timer: NodeJS.Timeout;
-    data: T;
+type CacheValue<T> = {
+    value: T;
+    timestamp: number;
 };
 
-class Cache<T> {
-    private cache: Record<string, CachedElement<T>> = {};
+export class Cache<T> {
+    #cache: Record<string, CacheValue<T>>;
+    #duration: number;
 
-    public get(key: string): T | undefined {
-        return this.cache[key]?.data;
+    constructor(duration: number) {
+        this.#duration = duration;
+        this.#cache = {};
     }
 
-    public set(key: string, data: T, ttl: number): void {
-        if (this.cache[key]) {
-            clearTimeout(this.cache[key].timer);
+    get(key: string): CacheValue<T> | undefined {
+        const cache = this.#cache[key];
+
+        if (cache && Date.now() - cache.timestamp < this.#duration) {
+            return cache;
         }
 
-        const timer = setTimeout(() => {
-            delete this.cache[key];
-        }, ttl);
+        return undefined;
+    }
 
-        this.cache[key] = { data, timer };
+    set(key: string, value: T): void {
+        this.#cache[key] = {
+            value,
+            timestamp: Date.now(),
+        };
     }
 }
