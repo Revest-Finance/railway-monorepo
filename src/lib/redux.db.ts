@@ -166,7 +166,7 @@ const getLatestRatio = async (): Promise<number> => {
         return Number(res.rows[0].ratio);
     } catch (err) {
         console.error("Error executing query", err);
-        throw err;
+        return 1;
     } finally {
         client.release();
     }
