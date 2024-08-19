@@ -1,46 +1,36 @@
 import axios from "axios";
 import { CHAIN_IDS, eth_price } from "@resonate/lib/constants";
-import { batchUpdatePoolTVLs, readPools } from "@resonate/lib/db.indexers";
-import { PoolAndTvl, QueueState } from "@resonate/lib/interfaces";
+import { readPools, updatePoolTVL } from "@resonate/db";
+import { QueueState } from "@resonate/models";
 
 let eth = 0;
 const reconcile = async (chainId: number) => {
     console.log("Running pool tvl indexer for chainId", chainId);
-    /**
-     * Need all pools and the exchange rate for each asset
-     */
     const pools = await readPools(chainId);
-    /**
-     * Need the queue state for each pool
-     */
-    const tvls: { [poolid: string]: number } = {};
-    await Promise.all(
-        pools.map(async pool => {
-            try {
-                const res = await axios.get(
-                    `https://app.resonate.finance/api/get-queue-state?chainId=${pool.chainid}&&poolId=${pool.poolid}`,
-                );
-                const queueState = res.data as QueueState;
-                tvls[pool.poolid] = queueState.totalUsd;
-            } catch (e) {
-                console.log(`[${pool.poolid}] ${e}`);
-                return;
+
+    const requests = pools.map(async pool => {
+        try {
+            const result = await axios.get(
+                `https://app.resonate.finance/api/get-queue-state?chainId=${pool.chainId}&&poolId=${pool.poolId}`,
+            );
+            const queueState = result.data as QueueState;
+
+            const tvl = queueState.totalUsd;
+
+            if (tvl > 0) {
+                await updatePoolTVL(chainId, pool.poolId, String(tvl));
             }
-        }),
-    );
-    console.table(tvls);
-    const updatablePools = pools
-        .filter(pool => tvls[pool.poolid] > 0)
-        .map((pool): PoolAndTvl => {
-            return { ...pool, tvl: tvls[pool.poolid] };
-        });
-    console.log(`${chainId} updatable pools = ${updatablePools.length}`);
-    await batchUpdatePoolTVLs(updatablePools);
+        } catch (e) {
+            console.log(`[${pool.poolId}] ${e}`);
+            return;
+        }
+    });
+
+    await Promise.all(requests);
 };
 
 export const grindPoolTVL = async () => {
     console.log("Grinding pool tvls at", new Date().toISOString());
-    // This runs once an hour because it is very expensive
 
     eth = await eth_price();
     const results = await Promise.allSettled(CHAIN_IDS.map(id => reconcile(id)));

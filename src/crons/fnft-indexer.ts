@@ -1,49 +1,45 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { addFNFT, readAllFNFTS } from "@resonate/lib/db.indexers";
-import { CHAIN_IDS, SUBGRAPH_URLS } from "@resonate/lib/constants";
-import { FnftCreationsQuery, FnftRedeemsQuery } from "@resonate/lib/gql";
-import { FNFTCreation, FNFTRedeemed } from "@resonate/lib/interfaces";
+import { CHAIN_IDS } from "@resonate/lib/constants";
+import { addFNFT, readAllFNFTS } from "@resonate/db";
+import { getFNFTCreations, getFNFTRedeems } from "@resonate/lib/eth.api";
 
-const graphFNFTCreationEvents = async (chainid: number) => {
-    const config: AxiosRequestConfig = {
-        method: "post",
-        url: SUBGRAPH_URLS[chainid],
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: FnftCreationsQuery(),
-    };
-    const creations_res = await axios(config);
-    const creations = creations_res["data"]["data"]["fnftcreations"] as FNFTCreation[];
-    config.data = FnftRedeemsQuery();
-    const redeems_res = await axios(config);
-    const redeems = redeems_res["data"]["data"]["fnftredeemeds"] as FNFTRedeemed[];
-    const redeems_aggregate: { [id: number]: number } = {};
-    for (const redeemEvent of redeems) {
-        if (!redeems_aggregate[redeemEvent.fnftId]) {
-            redeems_aggregate[redeemEvent.fnftId] = redeemEvent.quantityFNFTs;
+const graphFNFTCreationEvents = async (chainId: number) => {
+    const creations = await getFNFTCreations(chainId);
+    const redeemEvents = await getFNFTRedeems(chainId);
+
+    const redeems = redeemEvents.map((redeem: any) => ({
+        ...redeem,
+        quantityFNFTs: -parseInt(redeem.quantityFNFTs),
+    }));
+
+    const allEvents = [...creations, ...redeems];
+
+    const allFNFTs = allEvents.reduce((acc: any, event: any) => {
+        if (!acc[event.fnftId]) {
+            acc[event.fnftId] = event;
         } else {
-            redeems_aggregate[redeemEvent.fnftId] += redeemEvent.quantityFNFTs;
+            acc[event.fnftId].quantityFNFTs += event.quantityFNFTs;
         }
-    }
-    Object.keys(redeems_aggregate).forEach(key => {
-        const id = parseInt(key);
-        // creation has to exist for redeem to exist
-        creations.find(creation => creation.fnftId == id)!.quantityFNFTs -= redeems_aggregate[id];
-    });
+        return acc;
+    }, {});
 
-    const diff = creations.filter(creation => creation.quantityFNFTs > 0);
-    // console.log(diff.map( d => d.fnftId).sort().join(","))
-    return diff;
+    return allFNFTs.filter((creation: any) => creation.quantityFNFTs > 0);
 };
 
-async function reconcile(chainid: number) {
-    const graph_fnfts = await graphFNFTCreationEvents(chainid);
-    const db_fnfts = await readAllFNFTS(chainid);
-    console.log(`[${chainid}] Reconciling db with subgraph, graph:`, graph_fnfts.length, "db:", db_fnfts.length);
+async function reconcile(chainId: number) {
+    const graph_fnfts = await graphFNFTCreationEvents(chainId);
+    const db_fnfts = await readAllFNFTS(chainId);
+
+    console.log(`[${chainId}] Reconciling db with subgraph, graph:`, graph_fnfts.length, "db:", db_fnfts.length);
     for (const graph_fnft of graph_fnfts) {
-        if (!db_fnfts.find(fnft => fnft.fnftid == graph_fnft.fnftId)) {
-            await addFNFT(graph_fnft.poolId, graph_fnft.fnftId, graph_fnft.quantityFNFTs, 0, 0, chainid);
+        if (!db_fnfts.find(fnft => fnft.fnftId == graph_fnft.fnftId)) {
+            await addFNFT({
+                chainId,
+                fnftId: graph_fnft.fnftId,
+                poolId: graph_fnft.poolId,
+                quantity: graph_fnft.quantityFNFTs,
+                face: 0,
+                usd: "0",
+            });
         }
     }
 }

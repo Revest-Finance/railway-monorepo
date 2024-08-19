@@ -1,8 +1,8 @@
+import { getAddress, isAddress } from "ethers";
 import { Request, Response } from "express";
 
 import { CHAIN_IDS } from "@resonate/lib/constants";
 import { getFnftsForOwner } from "@resonate/lib/fnfts";
-import { getAddress, isAddress } from "ethers";
 
 export async function handleGetFNFTs(req: Request, res: Response) {
     if (Object.keys(req.params).length != 2) {

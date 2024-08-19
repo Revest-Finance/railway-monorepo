@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { CHAIN_IDS } from "@resonate/lib/constants";
-import { getOracles } from "@resonate/lib/db.api";
+import { getOracles } from "@resonate/db";
 
 export async function handleGetOracles(req: Request, res: Response) {
     if (Object.keys(req.params).length != 1) {

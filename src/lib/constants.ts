@@ -1,7 +1,6 @@
 import axios from "axios";
 import { JsonRpcProvider, getAddress } from "ethers";
 
-import { Pool } from "./interfaces";
 import { ARBITRUM_RPC_URL, FANTOM_RPC_URL, MAINNET_RPC_URL, OPTIMISM_RPC_URL, POLYGON_RPC_URL } from "../config";
 
 export const ZERO = 0n;
@@ -98,8 +97,4 @@ export const E6_addresses: { [chainId: number]: string[] } = {
 
 export const getDecimals = (address: string, chainId: number) => {
     return E6_addresses[chainId].includes(getAddress(address)) ? 6 : 18;
-};
-
-export const isCrossAsset = (pool: Pool) => {
-    return getAddress(pool.payoutasset) != getAddress(pool.vaultasset);
 };

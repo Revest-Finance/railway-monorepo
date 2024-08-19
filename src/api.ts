@@ -3,9 +3,14 @@ import express from "express";
 import { PORT } from "@resonate/config";
 import router from "@resonate/router";
 import TaskScheduler from "./task-scheduler";
+import { connectToDatabase } from "./db";
 
 const init = async () => {
     console.log("Starting server...");
+
+    await connectToDatabase();
+
+    console.log("Connected to database");
 
     const app = express();
 

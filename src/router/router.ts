@@ -8,6 +8,7 @@ import {
     handleGetFeaturedPools,
     handleGetFNFTs,
     handleGetHeroPools,
+    handleGetIndividualStatistics,
     handleGetOracles,
     handleGetPoints,
     handleGetPools,
@@ -49,5 +50,6 @@ router.get("/points", handleGetPoints);
 
 router.post("/redux", handleUpdateReduxStatistics);
 router.get("/redux", handleGetReduxStatistics);
+router.get("/redux/:address", handleGetIndividualStatistics);
 
 export default router;

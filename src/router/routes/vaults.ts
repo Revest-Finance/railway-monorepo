@@ -2,7 +2,7 @@ import { getAddress, isAddress } from "ethers";
 import { Request, Response } from "express";
 
 import { CHAIN_IDS } from "@resonate/lib/constants";
-import { getPoolByVault, getVaultInfo, isBeefyVault } from "@resonate/lib/db.api";
+import { getPoolByVault, getVaultInfo, isBeefyVault } from "@resonate/db";
 
 export async function handleGetVault(req: Request, res: Response) {
     if (Object.keys(req.params).length != 2) {

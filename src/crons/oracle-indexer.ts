@@ -1,19 +1,20 @@
+import { addOracle, readOracles } from "@resonate/db";
 import { CHAIN_IDS } from "@resonate/lib/constants";
-import { addOracle, readOracles } from "@resonate/lib/db.indexers";
+
 import { getRegisteredOracles } from "@resonate/lib/eth.api";
 
 async function reconcile(chainId: number) {
+    const dbOracles = await readOracles(chainId);
+
     const tokenOracles = await getRegisteredOracles(chainId);
 
     for (const oracle of tokenOracles) {
-        const dbOracles = await readOracles(chainId);
-
         if (!dbOracles.includes(oracle.token)) {
             await addOracle({
-                chainid: chainId,
+                timestamp: oracle.timestamp,
+                oracleAddress: oracle.oracle,
+                chainId: chainId,
                 asset: oracle.token,
-                oracle: oracle.oracle,
-                ts: oracle.blockNumber,
             });
         }
     }

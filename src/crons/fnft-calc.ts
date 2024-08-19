@@ -1,5 +1,3 @@
-import { readAllFNFTS, batchUpdateFNFTs } from "@resonate/lib/db.indexers";
-import { Contract, formatUnits, JsonRpcProvider, ZeroAddress } from "ethers";
 import {
     CHAIN_IDS,
     PROVIDER_STRING,
@@ -11,6 +9,9 @@ import {
 } from "@resonate/lib/constants";
 import { fnftHandlerABI, outputReceiverABI, priceProviderABI } from "@resonate/lib/abi";
 import { MulticallWrapper } from "ethers-multicall-provider";
+import { Contract, providers } from "ethers-v5";
+import { formatUnits, ZeroAddress } from "ethers";
+import { batchUpdateFNFTs, readAllFNFTS } from "@resonate/db";
 
 /**
  * POC for calculating the value of FNFTs
@@ -38,7 +39,7 @@ let eth = 0;
 const run = async (chainId: number) => {
     console.log("Running FNFT valuation", chainId);
     const fnfts = await readAllFNFTS(chainId);
-    const multicallProvider = MulticallWrapper.wrap(new JsonRpcProvider(PROVIDER_STRING[chainId]));
+    const multicallProvider = MulticallWrapper.wrap(new providers.JsonRpcProvider(PROVIDER_STRING[chainId]) as any);
     const output_receiver_multicall = new Contract(
         output_receiver_addresses[chainId],
         outputReceiverABI,
@@ -55,11 +56,11 @@ const run = async (chainId: number) => {
      * For each fnft, look up the total supply, the value of each individual fnft, and the asset contained within
      */
     const supplies_values_assets = await Promise.all([
-        ...fnfts.map(fnft => fnft_handler_multicall.getSupply(fnft.fnftid).catch(() => 0n)),
-        ...fnfts.map(fnft => output_receiver_multicall.getValue(fnft.fnftid).catch(() => 0n)),
+        ...fnfts.map(fnft => fnft_handler_multicall.getSupply(fnft.fnftId).catch(() => 0n)),
+        ...fnfts.map(fnft => output_receiver_multicall.getValue(fnft.fnftId).catch(() => 0n)),
         ...fnfts.map(fnft =>
-            output_receiver_multicall.getAsset(fnft.fnftid).catch(() => {
-                console.log("0x0 asset returned", fnft.poolid);
+            output_receiver_multicall.getAsset(fnft.fnftId).catch(() => {
+                console.log("0x0 asset returned", fnft.poolId);
                 return ZeroAddress;
             }),
         ),
@@ -96,8 +97,10 @@ const run = async (chainId: number) => {
             const totalUsd = eth * totalAssetsInFNFT * parseFloat(formatUnits(xrates[assets[i]], 18));
             return { ...fnft, usd: totalUsd, face: supplyOfFNFT };
         });
+
+    // TODO: Fix this type mismatch
     console.table(_fnfts);
-    await batchUpdateFNFTs(_fnfts);
+    await batchUpdateFNFTs(_fnfts as any);
 };
 
 export const grindFNFTCalc = async () => {

@@ -6,11 +6,16 @@ import { frax } from "../vaults/frax";
 
 export const grindAPYTVL = async () => {
     console.log(`Grinding APY/TVL at ${new Date().toISOString()}`);
-    const results = await Promise.allSettled([yearn(), beefy(), reaper(), rageTrade(), frax()]);
 
-    for (const result of results) {
+    const tasks = [yearn, beefy, reaper, rageTrade, frax];
+
+    const results = await Promise.allSettled(Object.values(tasks).map(task => task()));
+
+    for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+
         if (result.status === "rejected") {
-            console.error(result.reason);
+            console.error(`Error grinding ${tasks[i].name}: ${result.reason.message}`);
         }
     }
 

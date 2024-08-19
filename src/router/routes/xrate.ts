@@ -2,7 +2,7 @@ import { isAddress } from "ethers";
 import { Request, Response } from "express";
 
 import { CHAIN_IDS } from "@resonate/lib/constants";
-import { getXrate } from "@resonate/lib/db.api";
+import { getXrate } from "@resonate/db";
 
 export async function handleGetXrate(req: Request, res: Response) {
     // should only two params

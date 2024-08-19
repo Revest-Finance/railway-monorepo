@@ -1,46 +1,40 @@
-import { addAdapter, readAdapters } from "@resonate/lib/db.indexers";
-import { adapterQuery, AdapterQueryResponse } from "@resonate/lib/gql";
-import { CHAIN_IDS, SUBGRAPH_URLS } from "@resonate/lib/constants";
-import axios from "axios";
+import { CHAIN_IDS } from "@resonate/lib/constants";
+import { addAdapters, getLatestAdapterBlock } from "@resonate/db";
+import { resonate_contracts } from "@resonate/lib/contracts";
+import { EventLog } from "ethers";
 
-// Every minute
-async function indexAdaptersByChain(chainId: number) {
-    console.log(`[${chainId}] Reconciling db with subgraph`);
+interface AdapterEntry {
+    underlyingVault: string;
+    vaultAdapter: string;
+    vaultAsset: string;
+    blockNumber: number;
+}
 
-    const config = {
-        method: "post",
-        url: SUBGRAPH_URLS[chainId],
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: adapterQuery,
-    };
-    const res = (await axios(config)) as AdapterQueryResponse;
-    const graph_adapters = [...new Set(res.data.data.vaultAdapterRegistereds)];
-    const db_adapters = await readAdapters(chainId);
-    const distinct_graph_adapters = [...new Set(graph_adapters.map(adapter => adapter.underlyingVault))];
-    console.log(
-        `[${chainId}]`,
-        "Found",
-        graph_adapters.length,
-        "adapters in subgraph",
-        distinct_graph_adapters.length,
-        "distinct, Found",
-        db_adapters.length,
-        "adapters in db",
-    );
-    for (const adapter of graph_adapters) {
-        if (!db_adapters.includes(adapter.vaultAdapter)) {
-            await addAdapter({
-                chainid: chainId,
-                underlyingVault: adapter.underlyingVault,
-                vaultAdapter: adapter.vaultAdapter,
-                vaultAsset: adapter.vaultAsset,
-                ts: adapter.blockTimestamp,
-                status: 1,
-            });
-        }
-    }
+export async function indexAdaptersByChain(chainId: number) {
+    const resonate = resonate_contracts[chainId];
+
+    const latestBlock = await getLatestAdapterBlock(chainId);
+
+    const events = (await resonate.queryFilter(
+        resonate.filters.VaultAdapterRegistered(),
+        latestBlock + 1,
+        "latest",
+    )) as EventLog[];
+
+    const adapters: AdapterEntry[] = events.map(({ args, blockNumber }) => {
+        const { underlyingVault, vaultAdapter, vaultAsset } = args;
+        return { underlyingVault, vaultAdapter, vaultAsset, blockNumber };
+    });
+
+    const adaptersToIndex = adapters.map(adapter => ({
+        chainId,
+        adapter: adapter.vaultAdapter,
+        asset: adapter.vaultAsset,
+        vault: adapter.underlyingVault,
+        blockNumber: adapter.blockNumber,
+    }));
+
+    await addAdapters(adaptersToIndex);
 }
 
 export async function grindAdapters() {

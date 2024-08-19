@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { CHAIN_IDS } from "@resonate/lib/constants";
-import { getAdapters } from "@resonate/lib/db.api";
+import { getAdapters } from "@resonate/db";
 
 export async function handleGetAdapters(req: Request, res: Response) {
     if (Object.keys(req.params).length != 1) {

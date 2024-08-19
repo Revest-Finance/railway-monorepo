@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import { AUTH_KEY } from "@resonate/config";
 import { getReduxStatistics, updateReduxStatistics } from "@resonate/lib/db.api";
+import { getIndividualStatistics } from "@resonate/lib/redux";
 
 function isAuthorized(request: any): boolean {
     const auth = request.headers.authorization;
@@ -21,6 +22,18 @@ export async function handleUpdateReduxStatistics(req: Request, res: Response) {
 
 export async function handleGetReduxStatistics(_: Request, res: Response) {
     const data = await getReduxStatistics();
+
+    return res.status(200).json(data);
+}
+
+export async function handleGetIndividualStatistics(req: Request, res: Response) {
+    const address = req.params.address;
+
+    if (!address) {
+        return res.status(400).json({ message: "Invalid address" });
+    }
+
+    const data = await getIndividualStatistics(address);
 
     return res.status(200).json(data);
 }

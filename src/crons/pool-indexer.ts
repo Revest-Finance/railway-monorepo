@@ -1,50 +1,24 @@
-import axios from "axios";
 import { isE6 } from "@resonate/lib/contracts";
-import { addPool, readPoolIds } from "@resonate/lib/db.indexers";
-import { poolQuery, PoolQueryResponse } from "@resonate/lib/gql";
-import { CHAIN_IDS, SUBGRAPH_URLS } from "@resonate/lib/constants";
 
-async function reconcile(chainid: number) {
-    console.log("Reconciling db with subgraph");
+import { CHAIN_IDS } from "@resonate/lib/constants";
+import { readPoolIds, addPool } from "@resonate/db";
+import { getPoolCreations } from "@resonate/lib/eth.api";
 
-    const config = {
-        method: "post",
-        url: SUBGRAPH_URLS[chainid],
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: poolQuery,
-    };
-    const res = (await axios(config)) as PoolQueryResponse;
-    const graph_pools = res.data.data.poolCreateds;
-    const db_pools = await readPoolIds(chainid);
-    console.log("Found", graph_pools.length, "pools in subgraph", "Found", db_pools.length, "pools in db");
+async function reconcile(chainId: number) {
+    const db_pools = await readPoolIds(chainId);
+    const chainPools = await getPoolCreations(chainId);
+
+    console.log("Found", chainPools.length, "pools in subgraph", "Found", db_pools.length, "pools in db");
+
     const pool_promises: Promise<void>[] = [];
-    for (const pool of graph_pools) {
+    for (const pool of chainPools) {
         if (!db_pools.includes(pool.poolId)) {
             console.log("Adding pool", pool.poolId, "to db");
-            console.log(pool);
             try {
-                // Due to a bug in the contract, the second item in the pool created event is the payout asset
-                // the 4th item is the vault asset, despite what they are labelled.
                 await addPool({
-                    chainid: chainid,
-                    poolid: pool.poolId,
-                    payoutasset: pool.asset,
-                    vault: pool.vault,
-                    vaultasset: pool.payoutAsset,
-                    rate: pool.rate,
-                    addinterestrate: pool.addInterestRate,
-                    lockupperiod: parseInt(pool.lockupPeriod),
-                    packetsize: pool.packetSize,
-                    packetsizedecimals: isE6(pool.payoutAsset, chainid) ? 6 : 18,
-                    isfixedterm: pool.isFixedTerm,
-                    poolname: pool.poolName,
-                    creator: pool.creator,
-                    packetvolume: "0",
-                    verifiedby: "",
-                    ts: pool.blockTimestamp,
-                    tx: pool.transactionHash,
+                    ...pool,
+                    packetSizeDecimals: isE6(pool.payoutAsset, chainId) ? 6 : 18,
+                    verifiedBy: "",
                 });
             } catch (e) {
                 console.error("Error adding pool", pool.poolId, "to db", e);

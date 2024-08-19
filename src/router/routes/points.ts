@@ -1,5 +1,5 @@
-import { getPoints } from "@resonate/lib/points";
 import { Request, Response } from "express";
+import { getPoints } from "@resonate/lib/points";
 
 export async function handleGetPoints(req: Request, res: Response) {
     try {

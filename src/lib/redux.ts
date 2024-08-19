@@ -1,12 +1,6 @@
+import { ReduxStatisticsRequest } from "@resonate/models";
 import { getReduxStatistics, updateReduxStatistics } from "./db.api";
-import {
-    getTransfers,
-    getDeposits,
-    getLatestRatio,
-    getRatioUpdates,
-    getRedeems,
-    getReduxTotalDeposited,
-} from "./eth.api";
+import { getDeposits, getLatestRatio, getRatioUpdates, getRedeems, getReduxTotalDeposited } from "./eth.api";
 import { UserProfit } from "./interfaces";
 import {
     getUserProfit,
@@ -14,25 +8,7 @@ import {
     getLatestBlockNumber,
     insertProcessingEvents,
     insertRequestsWithShares,
-    insertTransfers,
 } from "./redux.db";
-
-export interface ReduxPerformanceEntry {
-    timestamp: string;
-    netProfit: number;
-    buyAndHoldReturn: number;
-    avgWinningTrade: number;
-    avgLosingTrade: number;
-    largestWinningTrade: number;
-    largestLosingTrade: number;
-}
-
-export interface ReduxStatisticsRequest {
-    currentBalance: number;
-    totalDeposited: number;
-    usd: ReduxPerformanceEntry;
-    percentage: ReduxPerformanceEntry;
-}
 
 const cache: { value: ReduxStatisticsRequest | null } = { value: null };
 
@@ -79,7 +55,7 @@ export async function handleGetReduxStatistics(): Promise<ReduxStatisticsRequest
     return cache.value;
 }
 
-export async function handleGetIndividualStatistics(userAddress: string): Promise<UserProfit> {
+export async function getIndividualStatistics(userAddress: string): Promise<UserProfit> {
     const onchainRatio = await getLatestRatio();
     const cachedRatio = await getCachedRatio();
 
@@ -92,17 +68,15 @@ export async function handleGetIndividualStatistics(userAddress: string): Promis
 
     const lastKnownBlock = (await getLatestBlockNumber()) + 1;
 
-    const [ratioUpdates, deposits, redeems, transfers] = await Promise.all([
+    const [ratioUpdates, deposits, redeems] = await Promise.all([
         getRatioUpdates(lastKnownBlock),
         getDeposits(lastKnownBlock),
         getRedeems(lastKnownBlock),
-        getTransfers(lastKnownBlock),
     ]);
 
     await insertProcessingEvents(ratioUpdates);
     await insertRequestsWithShares(deposits);
     await insertRequestsWithShares(redeems);
-    await insertTransfers(transfers);
 
     return await getUserProfit(userAddress);
 }

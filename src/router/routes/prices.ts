@@ -1,8 +1,9 @@
-import { Cache } from "@resonate/lib/cache";
-import { CHAIN_IDS, toCoingeckoPlatform } from "@resonate/lib/constants";
 import axios from "axios";
 import { isAddress } from "ethers";
 import { Request, Response } from "express";
+
+import { Cache } from "@resonate/lib/cache";
+import { CHAIN_IDS, toCoingeckoPlatform } from "@resonate/lib/constants";
 
 const cache = new Cache(1000 * 60);
 
