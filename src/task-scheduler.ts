@@ -14,6 +14,7 @@ const everyTenMinutes = "*/10 * * * *";
 const everyHalfHour = "*/30 * * * *";
 
 function start() {
+    grindAdapters();
     cron.schedule(everyTenMinutes, grindAdapters);
     cron.schedule(everyTenMinutes, grindAPYTVL);
     cron.schedule(everyTenMinutes, grindFNFTCalc);

@@ -1,14 +1,14 @@
-import { ReduxStatisticsRequest } from "@resonate/models";
-import { getReduxStatistics, updateReduxStatistics } from "./db.api";
+import { ReduxStatisticsRequest, UserProfit } from "@resonate/models";
 import { getDeposits, getLatestRatio, getRatioUpdates, getRedeems, getReduxTotalDeposited } from "./eth.api";
-import { UserProfit } from "./interfaces";
 import {
     getUserProfit,
     getLatestRatio as getCachedRatio,
     getLatestBlockNumber,
     insertProcessingEvents,
     insertRequestsWithShares,
-} from "./redux.db";
+    getReduxStatistics,
+    updateReduxStatistics,
+} from "@resonate/db";
 
 const cache: { value: ReduxStatisticsRequest | null } = { value: null };
 
@@ -52,7 +52,7 @@ export async function handleGetReduxStatistics(): Promise<ReduxStatisticsRequest
         cache.value = null;
     }, 5000 * 60);
 
-    return cache.value;
+    return cache.value!;
 }
 
 export async function getIndividualStatistics(userAddress: string): Promise<UserProfit> {

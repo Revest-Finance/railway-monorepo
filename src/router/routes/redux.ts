@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { AUTH_KEY } from "@resonate/config";
-import { getReduxStatistics, updateReduxStatistics } from "@resonate/lib/db.api";
+import { getReduxStatistics, updateReduxStatistics } from "@resonate/db";
 import { getIndividualStatistics } from "@resonate/lib/redux";
 
 function isAuthorized(request: any): boolean {

@@ -42,8 +42,8 @@ export class StatisticsUsd {
     @Column({
         name: "largest_losing_trade",
         type: "numeric",
-        nullable: true,
+        nullable: false,
         transformer: new ColumnNumericTransformer(),
     })
-    largestLosingTrade: number | null;
+    largestLosingTrade: number;
 }

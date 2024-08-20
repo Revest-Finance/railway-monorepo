@@ -9,8 +9,7 @@ import {
 } from "@resonate/lib/constants";
 import { fnftHandlerABI, outputReceiverABI, priceProviderABI } from "@resonate/lib/abi";
 import { MulticallWrapper } from "ethers-multicall-provider";
-import { Contract, providers } from "ethers-v5";
-import { formatUnits, ZeroAddress } from "ethers";
+import { Contract, formatUnits, JsonRpcProvider, ZeroAddress } from "ethers";
 import { batchUpdateFNFTs, readAllFNFTS } from "@resonate/db";
 
 /**
@@ -39,11 +38,12 @@ let eth = 0;
 const run = async (chainId: number) => {
     console.log("Running FNFT valuation", chainId);
     const fnfts = await readAllFNFTS(chainId);
-    const multicallProvider = MulticallWrapper.wrap(new providers.JsonRpcProvider(PROVIDER_STRING[chainId]) as any);
+    const multicallProvider = MulticallWrapper.wrap(new JsonRpcProvider(PROVIDER_STRING[chainId]));
+
     const output_receiver_multicall = new Contract(
         output_receiver_addresses[chainId],
         outputReceiverABI,
-        multicallProvider,
+        multicallProvider.provider,
     );
     const fnft_handler_multicall = new Contract(fnft_handler_addresses[chainId], fnftHandlerABI, multicallProvider);
     const price_provider_multicall = new Contract(
@@ -95,12 +95,11 @@ const run = async (chainId: number) => {
             const totalAssetsInFNFT =
                 supplyOfFNFT * parseFloat(formatUnits(values[i] as bigint, getDecimals(assets[i], chainId)));
             const totalUsd = eth * totalAssetsInFNFT * parseFloat(formatUnits(xrates[assets[i]], 18));
-            return { ...fnft, usd: totalUsd, face: supplyOfFNFT };
+            return { ...fnft, usd: totalUsd.toString(), face: supplyOfFNFT };
         });
 
-    // TODO: Fix this type mismatch
     console.table(_fnfts);
-    await batchUpdateFNFTs(_fnfts as any);
+    await batchUpdateFNFTs(_fnfts);
 };
 
 export const grindFNFTCalc = async () => {

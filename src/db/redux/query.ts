@@ -79,7 +79,29 @@ export const getUserProfit = async (userAddress: string): Promise<UserProfit> =>
     };
 };
 
-export async function getReduxStatistics() {
+export interface ReduxStatistics {
+    currentBalance: number;
+    usd: {
+        timestamp: Date;
+        netProfit: number;
+        buyAndHoldReturn: number;
+        avgWinningTrade: number;
+        avgLosingTrade: number;
+        largestWinningTrade: number;
+        largestLosingTrade: number;
+    };
+    percentage: {
+        timestamp: Date;
+        netProfit: number;
+        buyAndHoldReturn: number;
+        avgWinningTrade: number;
+        avgLosingTrade: number;
+        largestWinningTrade: number;
+        largestLosingTrade: number;
+    };
+}
+
+export async function getReduxStatistics(): Promise<ReduxStatistics> {
     const statisticsPercentage = await resonateDB.getRepository(StatisticsPercentage).find({
         order: {
             id: "DESC",
@@ -102,7 +124,7 @@ export async function getReduxStatistics() {
     });
 
     const defaultEntry = {
-        timestamp: new Date().toISOString(),
+        timestamp: new Date(),
         netProfit: 0,
         buyAndHoldReturn: 0,
         avgWinningTrade: 0,

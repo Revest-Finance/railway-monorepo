@@ -40,11 +40,7 @@ export async function indexAdaptersByChain(chainId: number) {
 export async function grindAdapters() {
     console.log("Grinding adapters at", new Date().toISOString());
 
-    const results = await Promise.allSettled(
-        CHAIN_IDS.map(chainid => {
-            return indexAdaptersByChain(chainid);
-        }),
-    );
+    const results = await Promise.allSettled(CHAIN_IDS.map(chainid => indexAdaptersByChain(chainid)));
 
     for (const result of results) {
         if (result.status === "rejected") {

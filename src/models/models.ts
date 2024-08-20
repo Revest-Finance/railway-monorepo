@@ -82,7 +82,7 @@ export interface UserProfit {
 }
 
 export interface ReduxPerformanceEntry {
-    timestamp: string;
+    timestamp: Date;
     netProfit: number;
     buyAndHoldReturn: number;
     avgWinningTrade: number;
