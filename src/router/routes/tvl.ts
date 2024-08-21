@@ -23,11 +23,11 @@ export async function handleChainTVL(req: Request, res: Response) {
         return res.status(400).json({ ERR: "Invalid chainId" });
     }
 
-    const chainid = parseInt(req.params.chainid);
-    const tvl = await getChainTVL(chainid);
+    const chainId = parseInt(req.params.chainId);
+    const tvl = await getChainTVL(Number(chainId));
 
     if (!tvl) {
-        return res.status(400).json({ ERR: `[${chainid}] TVL error` });
+        return res.status(400).json({ ERR: `[${chainId}] TVL error` });
     }
 
     return res.status(200).json(tvl);

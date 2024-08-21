@@ -10,8 +10,8 @@ export async function handleGetXrate(req: Request, res: Response) {
         return res.status(400).json({ ERR: "Invalid num of parameters" });
     }
 
-    if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) {
-        return res.status(400).json({ ERR: "Invalid chainid" });
+    if (!CHAIN_IDS.includes(parseInt(req.params.chainId))) {
+        return res.status(400).json({ ERR: "Invalid chainId" });
     }
 
     if (!isAddress(req.params.address)) {
@@ -19,11 +19,11 @@ export async function handleGetXrate(req: Request, res: Response) {
     }
 
     const address = req.params.address.toLowerCase(); // insert checksum
-    const chainid = parseInt(req.params.chainid);
-    const xrate = await getXrate(address, chainid);
+    const chainId = parseInt(req.params.chainId);
+    const xrate = await getXrate(address, chainId);
 
     if (!xrate) {
-        return res.status(400).json({ ERR: `[${chainid}] xrate for ${address} not found.` });
+        return res.status(400).json({ ERR: `[${chainId}] xrate for ${address} not found.` });
     }
 
     return res.status(200).json(xrate);

@@ -13,16 +13,11 @@ import {
 const everyTenMinutes = "*/10 * * * *";
 const everyHalfHour = "*/30 * * * *";
 
-function start() {
-    grindAdapters();
-    cron.schedule(everyTenMinutes, grindAdapters);
-    cron.schedule(everyTenMinutes, grindAPYTVL);
-    cron.schedule(everyTenMinutes, grindFNFTCalc);
-    cron.schedule(everyTenMinutes, grindFNFTs);
-    cron.schedule(everyTenMinutes, grindPools);
-    cron.schedule(everyHalfHour, grindOracles);
-    cron.schedule(everyHalfHour, grindPoolTVL);
-    cron.schedule(everyHalfHour, grindPoolVolume);
-}
-
-export default { start };
+cron.schedule(everyTenMinutes, grindAdapters);
+cron.schedule(everyTenMinutes, grindAPYTVL);
+cron.schedule(everyTenMinutes, grindFNFTCalc);
+cron.schedule(everyTenMinutes, grindFNFTs);
+cron.schedule(everyTenMinutes, grindPools);
+cron.schedule(everyHalfHour, grindOracles);
+cron.schedule(everyHalfHour, grindPoolTVL);
+cron.schedule(everyHalfHour, grindPoolVolume);

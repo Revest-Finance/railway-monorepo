@@ -15,6 +15,7 @@ export async function handleGetAdapters(req: Request, res: Response) {
     const chainId = parseInt(req.params.chainId);
 
     const adapters = await getAdapters(chainId);
+
     if (!adapters) {
         return res.status(400).json({ ERR: `[${chainId}] Error occurred while fetching adapters` });
     }

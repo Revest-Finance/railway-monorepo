@@ -62,14 +62,16 @@ export async function readVaultsFromProvider(provider: string) {
 }
 
 export async function getTVL() {
-    const result = await resonateDB.manager
-        .createQueryBuilder()
-        .select(`COALESCE(SUM(fnft.usd), 0) + COALESCE(SUM(pool.tvl), 0) AS total`)
-        .from("fnfts", "fnft")
-        .leftJoin("pools", "pool", "fnft.chainid = pool.chainid")
-        .getRawOne<{ total: string }>();
+    const result = await resonateDB.manager.query(`
+      SELECT SUM(total_sum) AS total
+      FROM (
+        SELECT COALESCE(SUM(usd)::NUMERIC, 0) AS total_sum FROM fnfts
+        UNION ALL
+        SELECT COALESCE(SUM(tvl)::NUMERIC, 0) AS total_sum FROM pools
+      ) AS combined;
+    `);
 
-    return Math.floor(parseFloat(result?.total ?? "0"));
+    return Math.floor(parseFloat(result[0]?.total ?? "0"));
 }
 
 export async function getChainTVL(chainId: number) {
@@ -77,16 +79,17 @@ export async function getChainTVL(chainId: number) {
         return 0;
     }
 
-    const result = await resonateDB.manager
-        .createQueryBuilder()
-        .select(`COALESCE(SUM(fnft.usd), 0) + COALESCE(SUM(pool.tvl), 0) AS total`)
-        .from("fnfts", "fnft")
-        .leftJoin("pools", "pool", "fnft.chainid = pool.chainid")
-        .where("fnft.chainid = :chainId", { chainId })
-        .orWhere("pool.chainid = :chainId", { chainId })
-        .getRawOne<{ total: string }>();
+    const result = await resonateDB.manager.query(
+        `SELECT SUM(total_sum) AS total
+      FROM (
+        SELECT COALESCE(SUM(usd)::NUMERIC, 0) AS total_sum FROM fnfts WHERE chainid = $1
+        UNION ALL
+        SELECT COALESCE(SUM(tvl)::NUMERIC, 0) AS total_sum FROM pools WHERE chainid = $1
+      ) AS combined;`,
+        [chainId],
+    );
 
-    return Math.floor(parseFloat(result?.total ?? "0"));
+    return Math.floor(parseFloat(result[0]?.total ?? "0"));
 }
 
 export async function getVaultInfo(address: string, chainId: number) {

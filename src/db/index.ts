@@ -18,12 +18,10 @@ const entities = [
     StatisticsPercentage,
 ];
 
-console.log(POSTGRES_URL);
-
 export const resonateDB = new DataSource({
     type: "postgres",
     url: POSTGRES_URL,
-    synchronize: true, // ENVIRONMENT === "development",
+    synchronize: ENVIRONMENT === "development",
     logging: false,
     entities: entities,
     migrations: [],

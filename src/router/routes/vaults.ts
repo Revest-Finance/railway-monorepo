@@ -9,8 +9,8 @@ export async function handleGetVault(req: Request, res: Response) {
         return res.status(400).json({ ERR: "Invalid number of parameters" });
     }
 
-    if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) {
-        return res.status(400).json({ ERR: "Invalid chainid" });
+    if (!CHAIN_IDS.includes(parseInt(req.params.chainId))) {
+        return res.status(400).json({ ERR: "Invalid chainId" });
     }
 
     if (!isAddress(req.params.address)) {
@@ -18,11 +18,11 @@ export async function handleGetVault(req: Request, res: Response) {
     }
 
     const address = getAddress(req.params.address.toLowerCase());
-    const chainid = parseInt(req.params.chainid);
-    const vaultInfo = await getVaultInfo(address, chainid);
+    const chainId = parseInt(req.params.chainId);
+    const vaultInfo = await getVaultInfo(address, chainId);
 
     if (!vaultInfo) {
-        return res.status(400).json({ ERR: `[${chainid}] ${address} not found.` });
+        return res.status(400).json({ ERR: `[${chainId}] ${address} not found.` });
     }
 
     return res.status(200).json(vaultInfo);

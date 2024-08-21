@@ -10,15 +10,15 @@ export async function handleGetPools(req: Request, res: Response) {
         return res.status(400).json({ ERR: "Invalid num of parameters" });
     }
 
-    if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) {
-        return res.status(400).json({ ERR: "Invalid chainid" });
+    if (!CHAIN_IDS.includes(parseInt(req.params.chainId))) {
+        return res.status(400).json({ ERR: "Invalid chainId" });
     }
 
-    const chainid = parseInt(req.params.chainid);
-    const pools = await getPools(chainid);
+    const chainId = parseInt(req.params.chainId);
+    const pools = await getPools(chainId);
 
     if (!pools) {
-        return res.status(400).json({ ERR: `[${chainid}] Error occurred while fetching pools` });
+        return res.status(400).json({ ERR: `[${chainId}] Error occurred while fetching pools` });
     }
 
     return res.status(200).json(pools);
@@ -56,15 +56,15 @@ export async function handleGetHeroPools(req: Request, res: Response) {
         return res.status(400).json({ ERR: "Invalid number of parameters" });
     }
 
-    if (!CHAIN_IDS.includes(parseInt(req.params.chainid))) {
+    if (!CHAIN_IDS.includes(parseInt(req.params.chainId))) {
         return res.status(400).json({ ERR: "Invalid chainId" });
     }
 
-    const chainid = parseInt(req.params.chainid);
-    const pools = await getHeroPool(chainid);
+    const chainId = parseInt(req.params.chainId);
+    const pools = await getHeroPool(chainId);
 
     if (!pools) {
-        return res.status(400).json({ ERR: `[${chainid}] Error occurred while fetching pools` });
+        return res.status(400).json({ ERR: `[${chainId}] Error occurred while fetching pools` });
     }
 
     return res.status(200).json(pools);

@@ -23,7 +23,7 @@ export async function getFnftsForOwner(chainId: number, owner: string): Promise<
 
     return balances
         .map((balance, index) => {
-            return { fnftId: index, balance: balance.toNumber() };
+            return { fnftId: index, balance: Number(balance) };
         })
         .filter(fnft => fnft.balance > 0);
 }
