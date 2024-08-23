@@ -38,8 +38,8 @@ export async function handleUpdateReduxStatistics(request: ReduxStatisticsReques
     }, 1000);
 }
 
-export async function handleGetReduxStatistics(): Promise<ReduxStatisticsRequest> {
-    if (cache.value) {
+export async function getOverallReduxStatistics(): Promise<ReduxStatisticsRequest> {
+    if (!!cache.value) {
         return cache.value;
     }
 

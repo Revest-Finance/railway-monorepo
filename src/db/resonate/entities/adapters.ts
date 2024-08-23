@@ -1,11 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity({ name: "adapters" })
 export class Adapter {
-    @PrimaryGeneratedColumn("uuid", { name: "id" })
-    id: string;
-
-    @Column({ name: "vault", type: "text", nullable: false })
+    @PrimaryColumn({ name: "vault", type: "text", nullable: false })
     vault: string;
 
     @Column({ name: "adapter", type: "text", nullable: false })
@@ -14,8 +11,11 @@ export class Adapter {
     @Column({ name: "asset", type: "text", nullable: false })
     asset: string;
 
-    @Column({ name: "block_number", type: "int", nullable: true, default: 0 })
-    blockNumber: number;
+    @Column({ name: "status", type: "int", nullable: false, default: -1 })
+    status?: number;
+
+    @Column({ name: "ts", type: "int", nullable: true, default: 0 })
+    ts: number;
 
     @Column({ name: "chainid", type: "int", nullable: false })
     chainId: number;

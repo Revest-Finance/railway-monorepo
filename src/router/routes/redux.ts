@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { AUTH_KEY } from "@resonate/config";
 import { getReduxStatistics, updateReduxStatistics } from "@resonate/db";
-import { getIndividualStatistics } from "@resonate/lib/redux";
+import { getIndividualStatistics, getOverallReduxStatistics } from "@resonate/lib/redux";
 
 function isAuthorized(request: any): boolean {
     const auth = request.headers.authorization;
@@ -21,7 +21,7 @@ export async function handleUpdateReduxStatistics(req: Request, res: Response) {
 }
 
 export async function handleGetReduxStatistics(_: Request, res: Response) {
-    const data = await getReduxStatistics();
+    const data = await getOverallReduxStatistics();
 
     return res.status(200).json(data);
 }

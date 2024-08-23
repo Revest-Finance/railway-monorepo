@@ -38,10 +38,14 @@ export const connectToDatabase = async () => {
         } catch (error) {
             console.log("STARTUP", `Failed to connect to database. Retrying...`);
 
+            console.log(error);
+
             attempts--;
 
             if (attempts === 0) {
                 console.log("STARTUP", `Failed to connect to database. Exiting...`, error);
+
+                throw "Failed to connect to database";
             } else {
                 await delay(1000);
             }

@@ -13,13 +13,9 @@ interface AdapterEntry {
 export async function indexAdaptersByChain(chainId: number) {
     const resonate = resonate_contracts[chainId];
 
-    const latestBlock = await getLatestAdapterBlock(chainId);
+    // const latestBlock = await getLatestAdapterBlock(chainId);
 
-    const events = (await resonate.queryFilter(
-        resonate.filters.VaultAdapterRegistered(),
-        latestBlock + 1,
-        "latest",
-    )) as EventLog[];
+    const events = (await resonate.queryFilter(resonate.filters.VaultAdapterRegistered(), 0, "latest")) as EventLog[];
 
     const adapters: AdapterEntry[] = events.map(({ args, blockNumber }) => {
         const { underlyingVault, vaultAdapter, vaultAsset } = args;
@@ -31,7 +27,7 @@ export async function indexAdaptersByChain(chainId: number) {
         adapter: adapter.vaultAdapter,
         asset: adapter.vaultAsset,
         vault: adapter.underlyingVault,
-        blockNumber: adapter.blockNumber,
+        ts: adapter.blockNumber,
     }));
 
     await addAdapters(adaptersToIndex);

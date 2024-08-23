@@ -21,10 +21,10 @@ export async function getAdapters(chainId: number) {
 export async function getLatestAdapterBlock(chainId: number) {
     const adapter = await resonateDB.getRepository(Adapter).findOne({
         where: { chainId },
-        order: { blockNumber: "DESC" },
+        order: { ts: "DESC" },
     });
 
-    return adapter?.blockNumber ?? 0;
+    return adapter?.ts ?? 0;
 }
 
 export async function getOracles(chainId: number) {
