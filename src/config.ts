@@ -17,3 +17,7 @@ export const OPTIMISM_RPC_URL = process.env.OPTIMISM_RPC_URL!;
 export const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL!;
 export const FANTOM_RPC_URL = process.env.FANTOM_RPC_URL!;
 export const ARBITRUM_RPC_URL = process.env.ARBITRUM_RPC_URL!;
+
+export const ENVIRONMENT = process.env.ENVIRONMENT!;
+
+export const POSTGRES_URL = process.env.POSTGRES_URL!;

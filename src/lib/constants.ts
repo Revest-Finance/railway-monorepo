@@ -1,16 +1,15 @@
 import axios from "axios";
 import { JsonRpcProvider, getAddress } from "ethers";
-import { Pool } from "./interfaces";
-import { BigNumber } from "ethers-v5";
+
 import { ARBITRUM_RPC_URL, FANTOM_RPC_URL, MAINNET_RPC_URL, OPTIMISM_RPC_URL, POLYGON_RPC_URL } from "../config";
 
-export const ZERO = BigNumber.from(0);
-export const ONE = BigNumber.from(1);
-export const E14 = BigNumber.from(10).pow(14);
-export const E15 = BigNumber.from(10).pow(15);
-export const E16 = BigNumber.from(10).pow(16);
-export const E17 = BigNumber.from(10).pow(17);
-export const E18 = BigNumber.from(10).pow(18);
+export const ZERO = 0n;
+export const ONE = 1n;
+export const E14 = 10n ** 14n;
+export const E15 = 10n ** 15n;
+export const E16 = 10n ** 16n;
+export const E17 = 10n ** 17n;
+export const E18 = 10n ** 18n;
 
 export const SUBGRAPH_URLS: { [chainid: number]: string } = {
     1: "https://gateway-arbitrum.network.thegraph.com/api/66a3a8233f632931e743d94d213db41a/subgraphs/id/5VN4pwrUSj5dUk2NGPFka5vwGfurSk5N9ZqdbgVkJPjy",
@@ -50,6 +49,8 @@ export const eth_price = async (): Promise<number> => {
     );
     return eth_res.data["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"].usd;
 };
+
+export const PRICE_PROVIDER_GENESIS = 15655652;
 
 export const price_provider_addresses: { [chainId: number]: string } = {
     1: "0x0F89ba3F140Ea9370aB05d434B8e32fDf41a6093",
@@ -96,8 +97,4 @@ export const E6_addresses: { [chainId: number]: string[] } = {
 
 export const getDecimals = (address: string, chainId: number) => {
     return E6_addresses[chainId].includes(getAddress(address)) ? 6 : 18;
-};
-
-export const isCrossAsset = (pool: Pool) => {
-    return getAddress(pool.payoutasset) != getAddress(pool.vaultasset);
 };
