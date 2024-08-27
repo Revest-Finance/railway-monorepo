@@ -147,7 +147,7 @@ export async function getLatestEnqueueBlock(chainId: number) {
         return 0;
     }
 
-    return rows[0].blockNumber + 1;
+    return rows[0].lastKnownBlock + 1;
 }
 
 export interface EnqueuedEventFilters {

@@ -24,11 +24,14 @@ describe("Tests ETH module", () => {
             "orderOwner": "0x8ca573430fd584065c080ff1d2ea1a8dfb259ae8",
             "blockNumber": 15669739,
             "blockTimestamp": new Date("2022-10-03T19:34:11.000Z"),
-            "lastKnownBlock": 20622339,
+            "lastKnownBlock": undefined,
             "transactionHash": "0x1f20a7ebc94ce1c5c7a5703d9e2eccf07466b9ff2831a8cee3b5381443791a3e",
         };
 
-        expect(events[0]).toEqual(firstRecord);
+        expect({
+            ...events[0],
+            lastKnownBlock: undefined,
+        }).toEqual(firstRecord);
     });
 
     afterAll(async () => {

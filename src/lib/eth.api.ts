@@ -267,9 +267,24 @@ export async function extractEnqueuedEvents(
     try {
         const resonate = resonate_contracts[chainId];
         const filter = resonate.filters[side]();
-        const events = await resonate.queryFilter(filter, startBlock, "latest");
 
         const currentBlock = await resonate.runner?.provider?.getBlock("latest");
+
+        if (currentBlock?.number === startBlock) {
+            console.log(`Too early to extract ${side} events on chain ${chainId}.`);
+            return [];
+        }
+
+        const events = await resonate.queryFilter(filter, startBlock, currentBlock?.number);
+
+        if (events.length === 0) {
+            console.log(`No new ${side} events on chain ${chainId}.`);
+            return [];
+        }
+
+        console.log(
+            `Extracted ${events.length} ${side} events from chain ${chainId}. Queried blocks ${startBlock} to ${currentBlock?.number}.`,
+        );
 
         const poolEvents = events.map(async (event): Promise<EnqueuedEvent> => {
             const { transactionHash, blockNumber } = event;
