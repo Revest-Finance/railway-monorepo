@@ -133,15 +133,11 @@ export async function handleRedeemRequests(): Promise<number> {
     return Number(formatUnits(totalRedeemed, 6));
 }
 
-export async function getCapitalActivated(chainId: number, poolId: string, blockNumber = 0): Promise<number> {
-    const filter = await resonate_contracts[chainId].CapitalActivated(poolId);
+export async function getCapitalActivated(chainId: number, poolId: string, blockNumber = 0): Promise<bigint> {
+    const filter = resonate_contracts[chainId].filters.CapitalActivated(poolId);
     const events = await resonate_contracts[chainId].queryFilter(filter, blockNumber, "latest");
 
-    const totalPackets = events
-        .map(event => event as EventLog)
-        .reduce((previous, current) => previous + current.args.numPackets, 0n);
-
-    return Number(formatUnits(totalPackets, 18));
+    return events.map(event => event as EventLog).reduce((previous, current) => previous + current.args.numPackets, 0n);
 }
 
 export type PoolCreation = {

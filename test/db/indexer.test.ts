@@ -1,5 +1,5 @@
-import { grindAPYTVL } from "@resonate/crons";
-import { Adapter, connectToDatabase, resonateDB } from "@resonate/db";
+import { grindAPYTVL, grindPoolVolume, volumeForPool } from "@resonate/crons";
+import { Adapter, connectToDatabase, getPool, resonateDB } from "@resonate/db";
 import { getPoolCreations } from "@resonate/lib/eth.api";
 
 describe("Verifies writes are possible to the DB for indexer ops", () => {
@@ -27,5 +27,11 @@ describe("Verifies writes are possible to the DB for indexer ops", () => {
         const result = await getPoolCreations(1);
 
         console.log(result);
+    });
+
+    it("Gets pool volume", async () => {
+        // const pool = await getPool(1, "0x87fba2beecef9c43e9c5058ca52c2dcd2605e3af9afbf78a91e7b8027fae00c7");
+
+        await grindPoolVolume();
     });
 });

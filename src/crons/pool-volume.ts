@@ -4,20 +4,20 @@ import { price_provider_contracts } from "@resonate/lib/contracts";
 import { Pool, readPools, updatePoolVolume } from "@resonate/db";
 import { getCapitalActivated } from "@resonate/lib/eth.api";
 
-let eth = getBigInt(0);
-async function volumeForPool(pool: Pool) {
+let eth = 0n;
+export async function volumeForPool(pool: Pool) {
     console.log(`[${pool.chainId}]`, "Updating volume for", pool.poolId);
 
     const sumPackets = await getCapitalActivated(pool.chainId, pool.poolId);
 
-    if (sumPackets === 0) {
+    if (sumPackets === 0n) {
         return;
     }
 
     try {
         const assetPrice = (await price_provider_contracts[pool.chainId].getSafePrice(pool.vaultAsset)) as bigint;
 
-        const im1 = getBigInt(sumPackets) * getBigInt(pool.packetSize) * assetPrice * eth;
+        const im1 = sumPackets * getBigInt(pool.packetSize) * assetPrice * eth;
         const im2 = im1 / getBigInt(10) ** getBigInt(18 + pool.packetSizeDecimals);
         const issuerVolume = parseFloat(im2.toString());
 
