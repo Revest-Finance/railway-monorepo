@@ -1,5 +1,5 @@
-import { Not } from "typeorm";
-import { Adapter, Fnft, Oracle, Pool, resonateDB, Vault, XRate } from "..";
+import { Like, Not } from "typeorm";
+import { Adapter, EnqueuedEvents, Fnft, Oracle, Pool, resonateDB, Vault, XRate } from "..";
 
 export async function readPoolIds(chainId: number) {
     const ids = await resonateDB.getRepository(Pool).find({
@@ -116,6 +116,10 @@ export async function getPool(chainId: number, poolId: string) {
     return resonateDB.getRepository(Pool).findOne({ where: { chainId, poolId } });
 }
 
+export async function getPoolsByName(poolName: string) {
+    return resonateDB.getRepository(Pool).find({ where: { poolName: Like(`%${poolName}%`) } });
+}
+
 export async function getPools(chainId: number) {
     return resonateDB.getRepository(Pool).find({ where: { chainId, status: Not(-1) } });
 }
@@ -130,4 +134,32 @@ export async function isBeefyVault(vaultAddress: string) {
     return await resonateDB
         .getRepository(Vault)
         .exists({ where: { address: vaultAddress, provider: "Beefy Finance" } });
+}
+
+export async function getLatestEnqueueBlock(chainId: number) {
+    const rows = await resonateDB.getRepository(EnqueuedEvents).find({
+        where: { chainId },
+        order: { lastKnownBlock: "DESC" },
+        take: 1,
+    });
+
+    if (!rows.length || rows.length === 0) {
+        return 0;
+    }
+
+    return rows[0].blockNumber + 1;
+}
+
+export interface EnqueuedEventFilters {
+    chainId: number;
+    side?: "EnqueueConsumer" | "EnqueueProvider";
+    owner?: string;
+    poolId?: string;
+}
+
+export async function getEnqueuedEvents(filters: EnqueuedEventFilters) {
+    return resonateDB.getRepository(EnqueuedEvents).find({
+        where: filters,
+        order: { blockNumber: "ASC" },
+    });
 }

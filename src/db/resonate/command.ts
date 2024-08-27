@@ -1,6 +1,7 @@
+import { EnqueuedEvent } from "@resonate/models/models";
 import { randomUUID } from "crypto";
 import { resonateDB } from "..";
-import { Adapter, Fnft, Oracle, Pool, Vault } from "./entities";
+import { Adapter, EnqueuedEvents, Fnft, Oracle, Pool, Vault } from "./entities";
 
 export type PoolRequest = Omit<Pool, "id">;
 
@@ -101,4 +102,10 @@ export async function updatePoolVolume(chainId: number, poolId: string, volume: 
     }
 
     await resonateDB.getRepository(Pool).update({ chainId, poolId }, { usdVolume: volume });
+}
+
+export async function addEnqueuedEvents(data: EnqueuedEvent[]) {
+    const dataWithIds = data.map(enqueuedEvent => ({ id: randomUUID(), ...enqueuedEvent }));
+
+    await resonateDB.getRepository(EnqueuedEvents).save(dataWithIds);
 }

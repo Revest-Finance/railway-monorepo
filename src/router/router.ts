@@ -10,12 +10,14 @@ import {
     handleGetIndividualStatistics,
     handleGetOracles,
     handleGetPoints,
+    handleGetPoolsByName,
     handleGetPools,
     handleGetPoolsById,
     handleGetReduxStatistics,
     handleGetXrate,
     handleTVL,
     handleUpdateReduxStatistics,
+    handleGetEnqueuedEvents,
 } from "./routes";
 import { handleGetBeefyVault, handleGetVault } from "./routes/vaults";
 import { handleGetEthPrice, handleGetUSDPrice } from "./routes/prices";
@@ -32,6 +34,7 @@ router.get("/:chainId/xrate/:address", handleGetXrate);
 
 router.get("/pools/featured", handleGetFeaturedPools);
 router.get("/pools/degen", handleGetDegenPools);
+router.get("/pools/:poolName", handleGetPoolsByName);
 router.get("/:chainId/pools", handleGetPools);
 router.get("/:chainId/pools/hero", handleGetHeroPools);
 router.get("/:chainId/pools/:poolId", handleGetPoolsById);
@@ -50,5 +53,7 @@ router.get("/points", handleGetPoints);
 router.post("/redux", handleUpdateReduxStatistics);
 router.get("/redux", handleGetReduxStatistics);
 router.get("/redux/:address", handleGetIndividualStatistics);
+
+router.get("/queue", handleGetEnqueuedEvents);
 
 export default router;

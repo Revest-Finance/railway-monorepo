@@ -43,11 +43,7 @@ export async function grindPoolVolume() {
 
     eth = getBigInt(Math.round(await eth_price()));
 
-    const results = await Promise.allSettled(
-        CHAIN_IDS.map(chainid => {
-            return reconcile(chainid);
-        }),
-    );
+    const results = await Promise.allSettled(CHAIN_IDS.map(reconcile));
 
     for (const result of results) {
         if (result.status === "rejected") {

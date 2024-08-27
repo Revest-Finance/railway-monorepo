@@ -97,3 +97,19 @@ export interface ReduxStatisticsRequest {
     usd: ReduxPerformanceEntry;
     percentage: ReduxPerformanceEntry;
 }
+
+export interface EnqueuedEvent {
+    chainId: number;
+    poolId: string;
+    position: number;
+    side: "EnqueueConsumer" | "EnqueueProvider";
+    shouldFarm: boolean;
+    address: string;
+    packetsRemaining: string;
+    depositedShares: string;
+    orderOwner: string;
+    blockNumber: number;
+    blockTimestamp: Date;
+    lastKnownBlock: number;
+    transactionHash: string;
+}

@@ -2,7 +2,7 @@ import { isHexString } from "ethers";
 import { Request, Response } from "express";
 
 import { CHAIN_IDS } from "@resonate/lib/constants";
-import { getDegenPools, getFeaturedPools, getHeroPool, getPool, getPools } from "@resonate/db";
+import { getDegenPools, getFeaturedPools, getHeroPool, getPool, getPoolsByName, getPools } from "@resonate/db";
 
 export async function handleGetPools(req: Request, res: Response) {
     // should only two params
@@ -88,4 +88,19 @@ export async function handleGetDegenPools(_: Request, res: Response) {
     }
 
     return res.status(200).json(pools);
+}
+
+export async function handleGetPoolsByName(req: Request, res: Response) {
+    if (Object.keys(req.params).length != 1) {
+        return res.status(400).json({ ERR: "Invalid number of parameters" });
+    }
+
+    const poolName = req.params.poolName;
+    const pool = await getPoolsByName(poolName);
+
+    if (!pool) {
+        return res.status(400).json({ ERR: `Pool with name ${poolName} not found` });
+    }
+
+    return res.status(200).json(pool);
 }

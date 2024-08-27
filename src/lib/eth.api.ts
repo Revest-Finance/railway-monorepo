@@ -1,7 +1,7 @@
 import { EventLog, formatUnits } from "ethers";
 import { PRICE_PROVIDER_GENESIS } from "./constants";
 import { price_provider_contracts, redux_cex_contract, resonate_contracts } from "./contracts";
-import { ProcessingEvent, ReduxRequest, Transfer } from "@resonate/models";
+import { EnqueuedEvent, ProcessingEvent, ReduxRequest, Transfer } from "@resonate/models";
 
 const redux = redux_cex_contract[42161]!;
 
@@ -257,4 +257,52 @@ export async function getReduxTotalDeposited(): Promise<number> {
     const [totalDeposited, totalRedeemed] = await Promise.all([handleDepositRequests(), handleRedeemRequests()]);
 
     return totalDeposited - totalRedeemed;
+}
+
+export async function extractEnqueuedEvents(
+    chainId: number,
+    side: "EnqueueConsumer" | "EnqueueProvider",
+    startBlock = 0,
+): Promise<EnqueuedEvent[]> {
+    try {
+        const resonate = resonate_contracts[chainId];
+        const filter = resonate.filters[side]();
+        const events = await resonate.queryFilter(filter, startBlock, "latest");
+
+        const currentBlock = await resonate.runner?.provider?.getBlock("latest");
+
+        const poolEvents = events.map(async (event): Promise<EnqueuedEvent> => {
+            const { transactionHash, blockNumber } = event;
+            const { timestamp } = await event.getBlock();
+
+            const blockTimestamp = new Date(timestamp * 1000);
+
+            const { poolId, position, addr: address, order, shouldFarm } = (event as EventLog).args;
+            const [packetsRemaining, depositedShares, owner] = order;
+
+            const orderOwner = owner.slice(0, 42);
+
+            return {
+                chainId,
+                transactionHash,
+                blockTimestamp,
+                shouldFarm,
+                address,
+                orderOwner,
+                blockNumber,
+                poolId,
+                side,
+                position: Number(position),
+                packetsRemaining: String(packetsRemaining),
+                depositedShares: String(depositedShares),
+                lastKnownBlock: currentBlock?.number ?? blockNumber,
+            };
+        });
+
+        return await Promise.all(poolEvents);
+    } catch (error) {
+        console.error(error);
+    }
+
+    return [];
 }
