@@ -6,6 +6,7 @@ import { ClientEvent, QueueState } from "@resonate/models";
 import { PROVIDERS } from "./constants";
 import { price_provider_contracts, resonate_contracts } from "./contracts";
 import { getEthPrice } from "./prices";
+import { Cache } from "./cache";
 
 async function getTokenPrice(chainId: number, token: string): Promise<bigint> {
     const contract = price_provider_contracts[chainId];
@@ -123,7 +124,14 @@ function calculateAssetAmount(
     return (packets * packetSize) / packetSizeDenominator;
 }
 
+const cache = new Cache<QueueState>();
+const cacheDuration = 1000 * 30;
+
 export async function getPoolQueues(chainId: number, poolId: string): Promise<QueueState> {
+    if (cache.has(`${chainId}:${poolId}`)) {
+        return cache.get(`${chainId}:${poolId}`)!;
+    }
+
     const pool = await getPool(chainId, poolId);
 
     if (!pool) {
@@ -174,7 +182,7 @@ export async function getPoolQueues(chainId: number, poolId: string): Promise<Qu
     const tokenDecimals = await getTokenDecimals(chainId, isProvider ? pool.payoutAsset : pool.vaultAsset);
     const ethPrice = await getEthPrice();
 
-    return {
+    const result = {
         isProducer: isProvider,
         totalQueuedPackets,
         adjustedQueuedTokens,
@@ -185,4 +193,8 @@ export async function getPoolQueues(chainId: number, poolId: string): Promise<Qu
         })),
         tokenDecimals,
     };
+
+    cache.set(`${chainId}:${poolId}`, result, cacheDuration);
+
+    return result;
 }

@@ -1,31 +1,19 @@
-type CacheValue<T> = {
-    value: T;
-    timestamp: number;
-};
-
 export class Cache<T> {
-    #cache: Record<string, CacheValue<T>>;
-    #duration: number;
+    #cache: Record<string, T> = {};
 
-    constructor(duration: number) {
-        this.#duration = duration;
-        this.#cache = {};
+    has(key: string): boolean {
+        return !!this.#cache[key];
     }
 
-    get(key: string): CacheValue<T> | undefined {
-        const cache = this.#cache[key];
-
-        if (cache && Date.now() - cache.timestamp < this.#duration) {
-            return cache;
-        }
-
-        return undefined;
+    get(key: string): T | undefined {
+        return this.#cache[key];
     }
 
-    set(key: string, value: T): void {
-        this.#cache[key] = {
-            value,
-            timestamp: Date.now(),
-        };
+    set(key: string, value: T, duration: number): void {
+        this.#cache[key] = value;
+
+        setTimeout(() => {
+            delete this.#cache[key];
+        }, duration);
     }
 }
