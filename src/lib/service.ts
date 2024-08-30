@@ -54,8 +54,6 @@ async function getQueueState(
                 isCrossAsset,
             );
 
-            console.log("asset amount", assetAmount);
-
             return {
                 chainId,
                 poolId,
@@ -110,7 +108,7 @@ function calculateAssetAmount(
     rate: bigint,
     isProvider: boolean,
     isCrossAsset: boolean,
-) {
+): bigint {
     if (isProvider && !isCrossAsset) {
         return (packets * packetSize * rate) / WeiPerEther;
     }

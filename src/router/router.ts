@@ -18,6 +18,7 @@ import {
     handleTVL,
     handleUpdateReduxStatistics,
     handleGetEnqueuedEvents,
+    handleGetQueueState,
 } from "./routes";
 import { handleGetBeefyVault, handleGetVault } from "./routes/vaults";
 import { handleGetEthPrice, handleGetUSDPrice } from "./routes/prices";
@@ -55,5 +56,6 @@ router.get("/redux", handleGetReduxStatistics);
 router.get("/redux/:address", handleGetIndividualStatistics);
 
 router.get("/queue", handleGetEnqueuedEvents);
+router.get("/queue-state", handleGetQueueState);
 
 export default router;
