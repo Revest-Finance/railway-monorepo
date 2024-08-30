@@ -1,7 +1,7 @@
 import { EventLog, formatUnits } from "ethers";
 import { PRICE_PROVIDER_GENESIS } from "./constants";
 import { price_provider_contracts, redux_cex_contract, resonate_contracts } from "./contracts";
-import { ProcessingEvent, ReduxRequest, Transfer } from "@resonate/models";
+import { EnqueuedEvent, ProcessingEvent, ReduxRequest, Transfer } from "@resonate/models";
 
 const redux = redux_cex_contract[42161]!;
 
@@ -137,7 +137,12 @@ export async function getCapitalActivated(chainId: number, poolId: string, block
     const filter = resonate_contracts[chainId].filters.CapitalActivated(poolId);
     const events = await resonate_contracts[chainId].queryFilter(filter, blockNumber, "latest");
 
-    return events.map(event => event as EventLog).reduce((previous, current) => previous + current.args.numPackets, 0n);
+    return events
+        .map(event => {
+            console.log((event as any).args);
+            return event as EventLog;
+        })
+        .reduce((previous, current) => previous + current.args.numPackets, 0n);
 }
 
 export type PoolCreation = {
@@ -156,7 +161,7 @@ export type PoolCreation = {
     tx: string;
 };
 
-export async function getPoolCreations(chainId: number): Promise<any> {
+export async function getPoolCreations(chainId: number): Promise<PoolCreation[]> {
     const filter = resonate_contracts[chainId].filters.PoolCreated();
     const events = await resonate_contracts[chainId].queryFilter(filter, 0);
 
@@ -257,4 +262,67 @@ export async function getReduxTotalDeposited(): Promise<number> {
     const [totalDeposited, totalRedeemed] = await Promise.all([handleDepositRequests(), handleRedeemRequests()]);
 
     return totalDeposited - totalRedeemed;
+}
+
+export async function extractEnqueuedEvents(
+    chainId: number,
+    side: "EnqueueConsumer" | "EnqueueProvider",
+    startBlock = 0,
+): Promise<EnqueuedEvent[]> {
+    try {
+        const resonate = resonate_contracts[chainId];
+        const filter = resonate.filters[side]();
+
+        const currentBlock = await resonate.runner?.provider?.getBlock("latest");
+
+        if (currentBlock?.number === startBlock) {
+            console.log(`Too early to extract ${side} events on chain ${chainId}.`);
+            return [];
+        }
+
+        const events = await resonate.queryFilter(filter, startBlock, currentBlock?.number);
+
+        if (events.length === 0) {
+            console.log(`No new ${side} events on chain ${chainId}.`);
+            return [];
+        }
+
+        console.log(
+            `Extracted ${events.length} ${side} events from chain ${chainId}. Queried blocks ${startBlock} to ${currentBlock?.number}.`,
+        );
+
+        const poolEvents = events.map(async (event): Promise<EnqueuedEvent> => {
+            const { transactionHash, blockNumber } = event;
+            const { timestamp } = await event.getBlock();
+
+            const blockTimestamp = new Date(timestamp * 1000);
+
+            const { poolId, position, addr: address, order, shouldFarm } = (event as EventLog).args;
+            const [packetsRemaining, depositedShares, owner] = order;
+
+            const orderOwner = owner.slice(0, 42);
+
+            return {
+                chainId,
+                transactionHash,
+                blockTimestamp,
+                shouldFarm,
+                address,
+                orderOwner,
+                blockNumber,
+                poolId,
+                side,
+                position: Number(position),
+                packetsRemaining: String(packetsRemaining),
+                depositedShares: String(depositedShares),
+                lastKnownBlock: currentBlock?.number ?? blockNumber,
+            };
+        });
+
+        return await Promise.all(poolEvents);
+    } catch (error) {
+        console.error(error);
+    }
+
+    return [];
 }

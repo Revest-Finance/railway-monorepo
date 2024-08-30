@@ -24,19 +24,22 @@ export interface ClientEvent {
     isProducer: boolean;
     poolId: string;
     address: string;
-    position: BigInt;
-    packetsRemaining: BigInt;
-    depositedShares: BigInt;
+    position: number;
+    packetsRemaining: bigint;
+    depositedShares: bigint;
     shouldFarm: boolean | undefined;
     owner: string;
-    ts: number;
+    ts: Date;
+    assetAmount: bigint;
+    assetValue: number;
 }
 export interface QueueState {
     isProducer: boolean;
     events: ClientEvent[];
-    totalQueuedPackets: BigInt;
-    adjustedQueuedTokens: BigInt;
+    totalQueuedPackets: bigint;
+    adjustedQueuedTokens: bigint;
     totalUsd: number;
+    tokenDecimals: number;
 }
 
 export interface Transfer {
@@ -96,4 +99,20 @@ export interface ReduxStatisticsRequest {
     totalDeposited: number;
     usd: ReduxPerformanceEntry;
     percentage: ReduxPerformanceEntry;
+}
+
+export interface EnqueuedEvent {
+    chainId: number;
+    poolId: string;
+    position: number;
+    side: "EnqueueConsumer" | "EnqueueProvider";
+    shouldFarm: boolean;
+    address: string;
+    packetsRemaining: string;
+    depositedShares: string;
+    orderOwner: string;
+    blockNumber: number;
+    blockTimestamp: Date;
+    lastKnownBlock: number;
+    transactionHash: string;
 }
