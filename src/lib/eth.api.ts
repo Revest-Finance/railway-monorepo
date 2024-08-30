@@ -137,7 +137,12 @@ export async function getCapitalActivated(chainId: number, poolId: string, block
     const filter = resonate_contracts[chainId].filters.CapitalActivated(poolId);
     const events = await resonate_contracts[chainId].queryFilter(filter, blockNumber, "latest");
 
-    return events.map(event => event as EventLog).reduce((previous, current) => previous + current.args.numPackets, 0n);
+    return events
+        .map(event => {
+            console.log((event as any).args);
+            return event as EventLog;
+        })
+        .reduce((previous, current) => previous + current.args.numPackets, 0n);
 }
 
 export type PoolCreation = {
@@ -156,7 +161,7 @@ export type PoolCreation = {
     tx: string;
 };
 
-export async function getPoolCreations(chainId: number): Promise<any> {
+export async function getPoolCreations(chainId: number): Promise<PoolCreation[]> {
     const filter = resonate_contracts[chainId].filters.PoolCreated();
     const events = await resonate_contracts[chainId].queryFilter(filter, 0);
 

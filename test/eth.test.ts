@@ -5,7 +5,7 @@ describe("Tests ETH module", () => {
     it("Verifies that the cron job runs appropriately", async () => {
         await connectToDatabase();
 
-        await grindQueue(1);
+        await grindQueue(42161);
 
         const events = await getEnqueuedEvents({ chainId: 1 });
 

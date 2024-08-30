@@ -24,19 +24,22 @@ export interface ClientEvent {
     isProducer: boolean;
     poolId: string;
     address: string;
-    position: BigInt;
-    packetsRemaining: BigInt;
-    depositedShares: BigInt;
+    position: number;
+    packetsRemaining: bigint;
+    depositedShares: bigint;
     shouldFarm: boolean | undefined;
     owner: string;
-    ts: number;
+    ts: Date;
+    assetAmount: bigint;
+    assetValue: number;
 }
 export interface QueueState {
     isProducer: boolean;
     events: ClientEvent[];
-    totalQueuedPackets: BigInt;
-    adjustedQueuedTokens: BigInt;
+    totalQueuedPackets: bigint;
+    adjustedQueuedTokens: bigint;
     totalUsd: number;
+    tokenDecimals: number;
 }
 
 export interface Transfer {

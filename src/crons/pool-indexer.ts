@@ -1,8 +1,7 @@
-import { isE6 } from "@resonate/lib/contracts";
-
 import { CHAIN_IDS } from "@resonate/lib/constants";
 import { readPoolIds, addPool } from "@resonate/db";
 import { getPoolCreations } from "@resonate/lib/eth.api";
+import { getTokenDecimals } from "@resonate/lib/service";
 
 async function reconcile(chainId: number) {
     const db_pools = await readPoolIds(chainId);
@@ -14,10 +13,18 @@ async function reconcile(chainId: number) {
     for (const pool of chainPools) {
         if (!db_pools.includes(pool.poolId)) {
             console.log("Adding pool", pool.poolId, "to db");
+
+            const tokenDecimals = await getTokenDecimals(chainId, pool.payoutAsset);
+
             try {
                 await addPool({
                     ...pool,
-                    packetSizeDecimals: isE6(pool.payoutAsset, chainId) ? 6 : 18,
+                    vaultAsset: pool.asset,
+                    chainId,
+                    tvl: "0",
+                    usdVolume: "0",
+                    status: -1,
+                    packetSizeDecimals: Number(tokenDecimals),
                     verifiedBy: "",
                 });
             } catch (e) {
