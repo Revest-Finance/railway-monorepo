@@ -20,7 +20,6 @@ export async function getEthPrice(): Promise<number> {
 
         return price;
     } catch (e) {
-        console.log(e);
         throw new Error("Failed to fetch eth price");
     }
 }

@@ -60,7 +60,6 @@ const run = async (chainId: number) => {
         ...fnfts.map(fnft => output_receiver_multicall.getValue(fnft.fnftId).catch(() => 0n)),
         ...fnfts.map(fnft =>
             output_receiver_multicall.getAsset(fnft.fnftId).catch(() => {
-                console.log("0x0 asset returned", fnft.poolId);
                 return ZeroAddress;
             }),
         ),

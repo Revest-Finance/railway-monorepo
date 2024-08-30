@@ -6,8 +6,6 @@ import { getCapitalActivated } from "@resonate/lib/eth.api";
 
 let eth = 0n;
 export async function volumeForPool(pool: Pool) {
-    console.log(`[${pool.chainId}]`, "Updating volume for", pool.poolId);
-
     const sumPackets = await getCapitalActivated(pool.chainId, pool.poolId);
 
     if (sumPackets === 0n) {

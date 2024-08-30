@@ -21,8 +21,7 @@ const reconcile = async (chainId: number) => {
                 await updatePoolTVL(chainId, pool.poolId, String(tvl));
             }
         } catch (e) {
-            console.log(`[${pool.poolId}] ${e}`);
-            return;
+            return new Promise((_, reject) => reject(e));
         }
     });
 
