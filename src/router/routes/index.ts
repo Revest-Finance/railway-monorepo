@@ -7,3 +7,4 @@ export * from "./xrate";
 export * from "./oracles";
 export * from "./points";
 export * from "./queue";
+export * from "./tokens";

@@ -20,6 +20,7 @@ import {
     handleGetEnqueuedEvents,
     handleGetQueueState,
     handleGetDetailedPools,
+    handleGetTokens,
 } from "./routes";
 import { handleGetBeefyVault, handleGetVault } from "./routes/vaults";
 import { handleGetEthPrice, handleGetUSDPrice } from "./routes/prices";
@@ -58,5 +59,7 @@ router.get("/redux/:address", handleGetIndividualStatistics);
 
 router.get("/queue", handleGetEnqueuedEvents);
 router.get("/queue-state", handleGetQueueState);
+
+router.get("/tokens/:chainId", handleGetTokens);
 
 export default router;
