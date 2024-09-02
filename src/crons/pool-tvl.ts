@@ -1,4 +1,3 @@
-import axios from "axios";
 import { CHAIN_IDS, eth_price } from "@resonate/lib/constants";
 import { readPools, updatePoolTVL } from "@resonate/db";
 import { getPoolQueues } from "@resonate/lib/service";

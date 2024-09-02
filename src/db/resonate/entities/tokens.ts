@@ -15,7 +15,7 @@ export class Token {
     decimals: number;
 
     @Column({ name: "logo", type: "text", nullable: true })
-    logo: string | null;
+    logoURL: string | null;
 
     @Column({ name: "name", type: "text", nullable: false })
     name: string;
