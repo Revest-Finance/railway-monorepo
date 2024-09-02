@@ -1,7 +1,7 @@
 import axios from "axios";
 import { CHAIN_IDS, eth_price } from "@resonate/lib/constants";
 import { readPools, updatePoolTVL } from "@resonate/db";
-import { QueueState } from "@resonate/models";
+import { getPoolQueues } from "@resonate/lib/service";
 
 let eth = 0;
 const reconcile = async (chainId: number) => {
@@ -10,10 +10,7 @@ const reconcile = async (chainId: number) => {
 
     const requests = pools.map(async pool => {
         try {
-            const result = await axios.get(
-                `https://app.resonate.finance/api/get-queue-state?chainId=${pool.chainId}&&poolId=${pool.poolId}`,
-            );
-            const queueState = result.data as QueueState;
+            const queueState = await getPoolQueues(chainId, pool.poolId);
 
             const tvl = queueState.totalUsd;
 
