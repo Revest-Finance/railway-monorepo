@@ -110,6 +110,6 @@ export async function addEnqueuedEvents(data: EnqueuedEvent[]) {
     await resonateDB.getRepository(EnqueuedEvents).save(dataWithIds);
 }
 
-export async function addToken(token: Omit<Token, "id">) {
-    await resonateDB.getRepository(Token).save(token);
+export async function addTokens(tokens: Omit<Token, "id">[]) {
+    await resonateDB.getRepository(Token).save(tokens);
 }

@@ -5,6 +5,9 @@ export class Token {
     @PrimaryGeneratedColumn({ name: "id" })
     id: number;
 
+    @Column({ name: "address", type: "text", nullable: false })
+    address: string;
+
     @Column({ name: "chainid", type: "int", nullable: false })
     chainId: number;
 

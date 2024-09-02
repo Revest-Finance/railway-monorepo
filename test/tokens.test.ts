@@ -1,4 +1,4 @@
-import { addToken, connectToDatabase, resonateDB } from "@resonate/db/index";
+import { addTokens, connectToDatabase, resonateDB } from "@resonate/db/index";
 
 const ethereum = [
     {
@@ -823,8 +823,13 @@ describe("Tests managing tokens", () => {
     it("Import all tokens", async () => {
         const allTokens = [...ethereum, ...arbitrum, ...fantom, ...optimism, ...polygon];
 
-        for (const token of allTokens) {
-            await addToken({ ...token, logo: token.logoURI });
-        }
+        const finalTokens = allTokens.map(token => {
+            return {
+                ...token,
+                logo: token.logoURI,
+            };
+        });
+
+        await addTokens(finalTokens);
     });
 });
