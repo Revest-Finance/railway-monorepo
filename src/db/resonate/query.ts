@@ -163,3 +163,7 @@ export async function getEnqueuedEvents(filters: EnqueuedEventFilters) {
         order: { blockNumber: "ASC" },
     });
 }
+
+export async function getTokensByChain(chainId: number) {
+    return resonateDB.getRepository(Pool).find({ where: { chainId } });
+}

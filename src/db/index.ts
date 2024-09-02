@@ -2,7 +2,7 @@ import { ENVIRONMENT, POSTGRES_URL } from "@resonate/config";
 import { delay } from "@resonate/utils";
 import { DataSource } from "typeorm";
 import { ReduxProcessingEvent, ReduxRequest, StatisticsBalance, StatisticsPercentage, StatisticsUsd } from "./redux";
-import { Adapter, EnqueuedEvents, Fnft, Oracle, Pool, Vault, XRate } from "./resonate";
+import { Adapter, EnqueuedEvents, Fnft, Oracle, Pool, Vault, XRate, Token } from "./resonate";
 
 const entities = [
     Adapter,
@@ -11,6 +11,7 @@ const entities = [
     XRate,
     Vault,
     Fnft,
+    Token,
     EnqueuedEvents,
     ReduxRequest,
     ReduxProcessingEvent,

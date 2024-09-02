@@ -1,6 +1,6 @@
 import { Contract, formatEther, formatUnits, WeiPerEther } from "ethers";
 
-import { getEnqueuedEvents, getPool } from "@resonate/db/index";
+import { getEnqueuedEvents, getPool, getPools, getVaultInfo } from "@resonate/db/index";
 import { ClientEvent, QueueState } from "@resonate/models";
 
 import { PROVIDERS } from "./constants";
@@ -195,4 +195,17 @@ export async function getPoolQueues(chainId: number, poolId: string): Promise<Qu
     cache.set(`${chainId}:${poolId}`, result, cacheDuration);
 
     return result;
+}
+
+export async function getDetailedPools(chainId: number) {
+    const pools = await getPools(chainId);
+
+    const detailedPools = [];
+
+    for (const pool of pools) {
+        const queueState = await getPoolQueues(chainId, pool.poolId);
+        const vault = await getVaultInfo(pool.vault, chainId);
+
+        detailedPools.push({ pool, queueState, vault });
+    }
 }
