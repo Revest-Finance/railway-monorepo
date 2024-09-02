@@ -830,6 +830,6 @@ describe("Tests managing tokens", () => {
             };
         });
 
-        await addTokens(finalTokens);
+        await addTokens(finalTokens as any);
     });
 });
