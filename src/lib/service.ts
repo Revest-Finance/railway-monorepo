@@ -1,6 +1,6 @@
 import { Contract, formatEther, formatUnits, WeiPerEther } from "ethers";
 
-import { getEnqueuedEvents, getPool, getPools, getVaultInfo } from "@resonate/db/index";
+import { getEnqueuedEvents, getPool, getPools, getToken, getVaultInfo, Pool } from "@resonate/db";
 import { ClientEvent, QueueState } from "@resonate/models";
 
 import { PROVIDERS } from "./constants";
@@ -11,7 +11,12 @@ import { Cache } from "./cache";
 async function getTokenPrice(chainId: number, token: string): Promise<bigint> {
     const contract = price_provider_contracts[chainId];
 
-    return await contract.getSafePrice(token);
+    try {
+        return await contract.getSafePrice(token);
+    } catch (e) {
+        console.error(`Failed to fetch price for ${token} on chain ${chainId}`);
+        return 0n;
+    }
 }
 
 async function getQueueState(
@@ -90,8 +95,15 @@ async function getAssetPrice(chainId: number, payoutAsset: string, vaultAsset: s
 }
 
 export async function getTokenDecimals(chainId: number, token: string) {
+    const tokenInfo = await getToken(token, chainId);
+
+    if (!!tokenInfo) {
+        return tokenInfo.decimals;
+    }
+
     const provider = PROVIDERS[chainId];
     const contract = new Contract(token, ["function decimals() view returns (uint8)"], provider);
+
     return await contract.decimals();
 }
 
@@ -157,7 +169,11 @@ export async function getPoolQueues(chainId: number, poolId: string): Promise<Qu
     const head = isProvider ? providerHead : consumerHead;
     const tail = isProvider ? providerTail : consumerTail;
 
+    const startTime = Date.now();
+
     const events = await getQueueState(chainId, poolId, head, tail, isProvider ? "EnqueueProvider" : "EnqueueConsumer");
+
+    console.log(`Queue state for ${poolId} fetched in ${(Date.now() - startTime) / 1000}s`);
 
     if (events.length === 0) {
         console.log("No events found");
@@ -197,15 +213,40 @@ export async function getPoolQueues(chainId: number, poolId: string): Promise<Qu
     return result;
 }
 
+const detailedCache = new Cache();
+
 export async function getDetailedPools(chainId: number) {
+    const cacheKey = `pools::${chainId}`;
+    if (detailedCache.has(cacheKey)) {
+        return detailedCache.get(cacheKey)!;
+    }
+
     const pools = await getPools(chainId);
 
-    const detailedPools = [];
-
-    for (const pool of pools) {
+    const getPoolDetails = async (pool: Pool) => {
         const queueState = await getPoolQueues(chainId, pool.poolId);
-        const vault = await getVaultInfo(pool.vault, chainId);
 
-        detailedPools.push({ pool, queueState, vault });
-    }
+        const [vault, vaultToken, payoutToken] = await Promise.all([
+            getVaultInfo(pool.vault, chainId),
+            getToken(pool.vaultAsset, chainId),
+            getToken(pool.payoutAsset, chainId),
+        ]);
+
+        return {
+            pool,
+            queueState,
+            vault,
+            tokens: {
+                vaultToken,
+                payoutToken,
+            },
+        };
+    };
+
+    const result = await Promise.all(pools.map(getPoolDetails));
+
+    // Cache for 1 minute
+    detailedCache.set(cacheKey, result, 1000 * 60);
+
+    return result;
 }

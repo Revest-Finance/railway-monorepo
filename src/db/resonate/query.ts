@@ -1,5 +1,5 @@
 import { Like, Not } from "typeorm";
-import { Adapter, EnqueuedEvents, Fnft, Oracle, Pool, resonateDB, Vault, XRate } from "..";
+import { Adapter, EnqueuedEvents, Fnft, Oracle, Pool, resonateDB, Token, Vault, XRate } from "..";
 
 export async function readPoolIds(chainId: number) {
     const ids = await resonateDB.getRepository(Pool).find({
@@ -165,5 +165,9 @@ export async function getEnqueuedEvents(filters: EnqueuedEventFilters) {
 }
 
 export async function getTokensByChain(chainId: number) {
-    return resonateDB.getRepository(Pool).find({ where: { chainId } });
+    return resonateDB.getRepository(Token).find({ where: { chainId } });
+}
+
+export async function getToken(address: string, chainId: number): Promise<Token | null> {
+    return resonateDB.getRepository(Token).findOne({ where: { address, chainId } });
 }

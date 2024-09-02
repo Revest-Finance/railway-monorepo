@@ -1,5 +1,6 @@
 import axios from "axios";
 import { JsonRpcProvider, getAddress } from "ethers";
+import { MulticallWrapper } from "ethers-multicall-provider";
 
 import { ARBITRUM_RPC_URL, FANTOM_RPC_URL, MAINNET_RPC_URL, OPTIMISM_RPC_URL, POLYGON_RPC_URL } from "../config";
 
@@ -28,11 +29,11 @@ export const PROVIDER_STRING: { [chainid: number]: string } = {
 };
 
 export const PROVIDERS: { [chainId: number]: JsonRpcProvider } = {
-    1: new JsonRpcProvider(MAINNET_RPC_URL),
-    10: new JsonRpcProvider(OPTIMISM_RPC_URL),
-    137: new JsonRpcProvider(POLYGON_RPC_URL),
-    250: new JsonRpcProvider(FANTOM_RPC_URL),
-    42161: new JsonRpcProvider(ARBITRUM_RPC_URL),
+    1: MulticallWrapper.wrap(new JsonRpcProvider(MAINNET_RPC_URL)),
+    10: MulticallWrapper.wrap(new JsonRpcProvider(OPTIMISM_RPC_URL)),
+    137: MulticallWrapper.wrap(new JsonRpcProvider(POLYGON_RPC_URL)),
+    250: MulticallWrapper.wrap(new JsonRpcProvider(FANTOM_RPC_URL)),
+    42161: MulticallWrapper.wrap(new JsonRpcProvider(ARBITRUM_RPC_URL)),
     31337: new JsonRpcProvider("http://localhost:8545"),
 };
 
