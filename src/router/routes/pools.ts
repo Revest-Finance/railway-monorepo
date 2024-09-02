@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 
 import { CHAIN_IDS } from "@resonate/lib/constants";
 import { getDegenPools, getFeaturedPools, getHeroPool, getPool, getPoolsByName, getPools } from "@resonate/db";
+import { getDetailedPools } from "@resonate/lib/service";
 
 export async function handleGetPools(req: Request, res: Response) {
     // should only two params
@@ -103,4 +104,20 @@ export async function handleGetPoolsByName(req: Request, res: Response) {
     }
 
     return res.status(200).json(pool);
+}
+
+export async function handleGetDetailedPools(req: Request, res: Response) {
+    if (Object.keys(req.params).length != 1) {
+        return res.status(400).json({ ERR: "Invalid number of parameters" });
+    }
+
+    const chainId = req.params.chainId;
+
+    if (!CHAIN_IDS.includes(parseInt(chainId))) {
+        return res.status(400).json({ ERR: "Invalid chainId" });
+    }
+
+    const pools = await getDetailedPools(parseInt(chainId));
+
+    return res.status(200).json(pools);
 }
