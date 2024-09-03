@@ -1,3 +1,4 @@
+import { Mutex } from "@resonate/utils/mutex";
 import axios from "axios";
 import { Cache } from "./cache";
 
@@ -7,23 +8,15 @@ const ethPriceUrl =
 const ethCache = new Cache();
 const cacheDuration = 1000 * 30;
 
-let lock = false;
+const mutex = new Mutex();
 
 export async function getEthPrice(): Promise<number> {
+    await mutex.lock();
+
     if (ethCache.has("price")) {
+        mutex.unlock();
         return Number(ethCache.get("price"));
     }
-
-    if (lock) {
-        return new Promise(resolve =>
-            setTimeout(async () => {
-                const price = await getEthPrice();
-                return resolve(price);
-            }, 100),
-        );
-    }
-
-    lock = true;
 
     try {
         const ethRes = await axios.get(ethPriceUrl);
@@ -34,8 +27,8 @@ export async function getEthPrice(): Promise<number> {
 
         return price;
     } catch (e) {
-        throw new Error("Failed to fetch eth price");
+        return 0;
     } finally {
-        lock = false;
+        mutex.unlock();
     }
 }

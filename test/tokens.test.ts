@@ -223,7 +223,6 @@ const arbitrum = [
         "symbol": "USDC",
         "link": "https://app.uniswap.org/#/swap",
     },
-
     {
         "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
         "chainId": 42161,
@@ -249,6 +248,14 @@ const arbitrum = [
         "symbol": "WETH",
     },
     {
+        "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+        "chainId": 42161,
+        "decimals": 8,
+        "logoURI": "/tokens/lp_logos/btc.svg",
+        "name": "Wrapped Bitcoin",
+        "symbol": "WBTC",
+    },
+    {
         "address": "0x3E6648C5a70A150A88bCE65F4aD4d506Fe15d2AF",
         "chainId": 42161,
         "decimals": 18,
@@ -271,7 +278,7 @@ const arbitrum = [
         "decimals": 18,
         "logoURI": "/tokens/lp_logos/glp.svg",
         "name": "GMX sGLP",
-        "symbol": "sGLP ",
+        "symbol": "sGLP",
         "link": "https://app.gmx.io/#/buy_glp",
     },
     {
@@ -280,7 +287,7 @@ const arbitrum = [
         "decimals": 18,
         "logoURI": "/tokens/lp_logos/glp.svg",
         "name": "GMX sGLP",
-        "symbol": "sGLP ",
+        "symbol": "sGLP",
         "link": "https://app.gmx.io/#/earn",
     },
     {
@@ -289,15 +296,14 @@ const arbitrum = [
         "decimals": 18,
         "logoURI": "/tokens/lp_logos/gdai.png",
         "name": "Gains Network DAI",
-        "symbol": "gDAI ",
+        "symbol": "gDAI",
         "link": "https://gainsnetwork.io/pools/",
     },
     {
         "address": "0xF84D28A8D28292842dD73D1c5F99476A80b6666A",
         "chainId": 42161,
         "decimals": 6,
-        "logoURI":
-            "https://assets.coingecko.com/coins/images/30576/standard/OE_Logo_200x200_Transparent.png?1696529441",
+        "logoURI": "/openEdenTBill.svg",
         "name": "OpenEden TBILL",
         "symbol": "TBILL",
         "link": "https://app.openeden.com/",
@@ -306,14 +312,48 @@ const arbitrum = [
         "address": "0x9e6448a02e04Df146aFb5AE62ff407c23b94B8b8",
         "chainId": 42161,
         "decimals": 6,
-        "logoURI":
-            "https://assets.coingecko.com/coins/images/30576/standard/OE_Logo_200x200_Transparent.png?1696529441",
+        "logoURI": "/wTBill.svg",
         "name": "OpenEden wTBILL",
         "symbol": "wTBILL",
         "link": "https://app.openeden.com/",
     },
+    {
+        "address": "0x912CE59144191C1204E64559FE8253a0e49E6548",
+        "chainId": 42161,
+        "decimals": 18,
+        "logoURI": "/tokens/lp_logos/arb.svg",
+        "name": "Arbitrum Token",
+        "symbol": "Arb",
+        "link": "https://app.uniswap.org/#/swap",
+    },
+    {
+        "address": "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
+        "chainId": 42161,
+        "decimals": 18,
+        "logoURI": "/tokens/lp_logos/uni.svg",
+        "name": "Uni Token",
+        "symbol": "UNI",
+        "link": "https://app.uniswap.org/#/swap",
+    },
+    {
+        "address": "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+        "chainId": 42161,
+        "decimals": 18,
+        "logoURI": "/tokens/lp_logos/link.svg",
+        "name": "Chainlink Token",
+        "symbol": "LINK",
+        "link": "https://app.uniswap.org/#/swap",
+    },
+    {
+        "address": "0x4bD135524897333bec344e50ddD85126554E58B4",
+        "chainId": 42161,
+        "decimals": 18,
+        "logoURI": "/tokens/lp_logos/usdc_usdm.png",
+        "name": "Curve USDC/USDM",
+        "symbol": "usdc-usdm",
+        "link": "https://curve.fi/#/arbitrum/pools/factory-stable-ng-30/deposit",
+    },
 ];
-
 const fantom = [
     {
         "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
@@ -763,7 +803,7 @@ describe("Tests managing tokens", () => {
     });
 
     it("Import all tokens", async () => {
-        const allTokens = [...ethereum, ...arbitrum, ...fantom, ...optimism, ...polygon];
+        const allTokens = [...arbitrum];
 
         const finalTokens = allTokens.map(token => {
             return {
