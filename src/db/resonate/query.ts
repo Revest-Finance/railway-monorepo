@@ -93,11 +93,25 @@ export async function getChainTVL(chainId: number) {
 }
 
 export async function getVaultInfo(address: string, chainId: number) {
-    return resonateDB.getRepository(Vault).findOne({ where: { address, chainId } });
+    const repository = resonateDB.getRepository(Vault);
+    const rows = await repository
+        .createQueryBuilder("v")
+        .where("LOWER(v.address) = LOWER(:address)", { address })
+        .andWhere("v.chainId = :chainId", { chainId })
+        .getMany();
+
+    return rows.length > 0 ? rows[0] : null;
 }
 
 export async function getXrate(address: string, chainId: number) {
-    return resonateDB.getRepository(XRate).findOne({ where: { address, chainId } });
+    const repository = resonateDB.getRepository(XRate);
+    const rows = await repository
+        .createQueryBuilder("x")
+        .where("LOWER(x.address) = LOWER(:address)", { address })
+        .andWhere("x.chainId = :chainId", { chainId })
+        .getMany();
+
+    return rows.length > 0 ? rows[0] : null;
 }
 
 export async function getFeaturedPools() {
@@ -169,5 +183,13 @@ export async function getTokensByChain(chainId: number) {
 }
 
 export async function getToken(address: string, chainId: number): Promise<Token | null> {
-    return resonateDB.getRepository(Token).findOne({ where: { address, chainId } });
+    // finds a token by address and chainId while comparing both addresses in lowercase
+    const repository = resonateDB.getRepository(Token);
+    const rows = await repository
+        .createQueryBuilder("t")
+        .where("LOWER(t.address) = LOWER(:address)", { address })
+        .andWhere("t.chainId = :chainId", { chainId })
+        .getMany();
+
+    return rows.length > 0 ? rows[0] : null;
 }
