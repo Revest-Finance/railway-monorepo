@@ -108,13 +108,13 @@ export async function handleGetPoolsByName(req: Request, res: Response) {
         return res.status(400).json({ ERR: "Invalid chainId" });
     }
 
-    const pool = await getPoolsByName(poolName, chainId);
+    const pools = await getDetailedPools(chainId, poolName);
 
-    if (!pool) {
-        return res.status(400).json({ ERR: `Pool with name ${poolName} not found` });
+    if (!pools) {
+        return res.status(400).json({ ERR: `Pools with name ${poolName} not found` });
     }
 
-    return res.status(200).json(pool);
+    return res.status(200).json(pools);
 }
 
 export async function handleGetDetailedPools(req: Request, res: Response) {

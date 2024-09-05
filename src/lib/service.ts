@@ -1,6 +1,6 @@
 import { Contract, formatEther, formatUnits, WeiPerEther } from "ethers";
 
-import { getEnqueuedEvents, getPool, getPools, getToken, getVaultInfo, Pool } from "@resonate/db";
+import { getEnqueuedEvents, getPool, getPools, getPoolsByName, getToken, getVaultInfo, Pool } from "@resonate/db";
 import { ClientEvent, QueueState } from "@resonate/models";
 
 import { PROVIDERS } from "./constants";
@@ -215,13 +215,13 @@ export async function getPoolQueues(chainId: number, poolId: string): Promise<Qu
 
 const detailedCache = new Cache();
 
-export async function getDetailedPools(chainId: number) {
+export async function getDetailedPools(chainId: number, poolName?: string) {
     const cacheKey = `pools::${chainId}`;
     if (detailedCache.has(cacheKey)) {
         return detailedCache.get(cacheKey)!;
     }
 
-    const pools = await getPools(chainId);
+    const pools = !!poolName ? await getPoolsByName(poolName, chainId) : await getPools(chainId);
 
     const getPoolDetails = async (pool: Pool) => {
         const queueState = await getPoolQueues(chainId, pool.poolId);
