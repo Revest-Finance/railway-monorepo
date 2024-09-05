@@ -38,7 +38,7 @@ router.get("/:chainId/xrate/:address", handleGetXrate);
 router.get("/pools/:chainId", handleGetDetailedPools);
 router.get("/pools/featured", handleGetFeaturedPools);
 router.get("/pools/degen", handleGetDegenPools);
-router.get("/pools/:poolName", handleGetPoolsByName);
+router.get("/pools", handleGetPoolsByName);
 router.get("/:chainId/pools", handleGetPools);
 router.get("/:chainId/pools/hero", handleGetHeroPools);
 router.get("/:chainId/pools/:poolId", handleGetPoolsById);

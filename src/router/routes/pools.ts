@@ -92,12 +92,23 @@ export async function handleGetDegenPools(_: Request, res: Response) {
 }
 
 export async function handleGetPoolsByName(req: Request, res: Response) {
-    if (Object.keys(req.params).length != 1) {
+    if (Object.keys(req.query).length != 2) {
         return res.status(400).json({ ERR: "Invalid number of parameters" });
     }
 
-    const poolName = req.params.poolName;
-    const pool = await getPoolsByName(poolName);
+    const poolName = req.query.poolName as string;
+
+    if (!poolName) {
+        return res.status(400).json({ ERR: "Invalid poolName" });
+    }
+
+    const chainId = parseInt(req.query.chainId as string);
+
+    if (!CHAIN_IDS.includes(chainId)) {
+        return res.status(400).json({ ERR: "Invalid chainId" });
+    }
+
+    const pool = await getPoolsByName(poolName, chainId);
 
     if (!pool) {
         return res.status(400).json({ ERR: `Pool with name ${poolName} not found` });

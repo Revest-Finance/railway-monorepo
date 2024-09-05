@@ -130,8 +130,8 @@ export async function getPool(chainId: number, poolId: string) {
     return resonateDB.getRepository(Pool).findOne({ where: { chainId, poolId } });
 }
 
-export async function getPoolsByName(poolName: string) {
-    return resonateDB.getRepository(Pool).find({ where: { poolName: Like(`%${poolName}%`) } });
+export async function getPoolsByName(poolName: string, chainId: number) {
+    return resonateDB.getRepository(Pool).find({ where: { poolName: Like(`%${poolName}%`), chainId } });
 }
 
 export async function getPools(chainId: number) {
