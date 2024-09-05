@@ -216,7 +216,7 @@ export async function getPoolQueues(chainId: number, poolId: string): Promise<Qu
 const detailedCache = new Cache();
 
 export async function getDetailedPools(chainId: number, poolName?: string) {
-    const cacheKey = `pools::${chainId}`;
+    const cacheKey = !poolName ? `pools::${chainId}` : `pools::${chainId}::${poolName}`;
     if (detailedCache.has(cacheKey)) {
         return detailedCache.get(cacheKey)!;
     }
